@@ -1,0 +1,22 @@
+{
+    "presets": [
+        [
+            "@babel/preset-react",
+            {
+                "runtime": "automatic"
+            }
+        ],
+        "@babel/preset-env"
+    ],
+    "plugins": [
+        "@babel/plugin-transform-react-jsx",
+        "@babel/plugin-proposal-class-properties",
+        "@babel/plugin-syntax-jsx",
+        [
+            "@babel/plugin-transform-runtime",
+            {
+                "regenerator": true
+            }
+        ]
+    ]
+}
