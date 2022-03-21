@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 
-const Search = ({ setTokens, tokens, textToHightlight }) => {
+const Search = ({ setTokens, tokens, annotation, setAnnotation }) => {
     const [query, setQuery] = useState("");
     const [showResults, setShowResults] = useState(true);
     let counter = useRef({});
@@ -15,10 +15,18 @@ const Search = ({ setTokens, tokens, textToHightlight }) => {
     });
 
     useEffect(() => {
-        if (counter.current != null) {
-            hits = counter.current;
-        }
-    });
+        if (annotation == null) return;
+        console.log(annotation)
+        counter.current = {};
+        annotation.transcript.map((point) => {
+            let ele = document.createElement('div');
+            ele.innerHTML = point.text;
+            ele.innerHTML = ele.innerHTML.replace(/<\/?mark[^>]*>/g, "");
+            if (tokens.length > 0) highlight(ele, tokens);
+            point.text = ele.innerHTML
+        });
+        setAnnotation(annotation);
+    }, [annotation]);
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -27,7 +35,12 @@ const Search = ({ setTokens, tokens, textToHightlight }) => {
         setTokens([...newTokens]);
         setQuery("");
         setShowResults(true);
-        highlight(domTrascripts, [query]);
+        annotation.transcript.map((point, index) => {
+            let ele = document.createElement('div');
+            ele.innerHTML = point.text;
+            highlight(ele, [query]);
+            point.text = ele.innerHTML
+        });
     }
 
     const handleDelete = (e) => {
@@ -57,7 +70,7 @@ const Search = ({ setTokens, tokens, textToHightlight }) => {
             counter.current[index].active -= 1;
             let span = e.currentTarget.parentElement.getElementsByTagName('span');
             span.textContent = counter.current[index].active + "/" + counter.current[index].total
-            navActiveMarker(index,counter.current[index].active);
+            navActiveMarker(index, counter.current[index].active);
         }
         console.log('prev', counter.current)
     }
@@ -68,33 +81,35 @@ const Search = ({ setTokens, tokens, textToHightlight }) => {
         if (counter.current[index].active < counter.current[index].total) {
             // let span = e.currentTarget.parentNode.getElementsByTagName('span');
             counter.current[index].active = counter.current[index].active + 1;
-            navActiveMarker(index,counter.current[index].active);
+            navActiveMarker(index, counter.current[index].active);
         }
     }
 
     const navActiveMarker = (token, index) => {
         let parent = document.getElementById("transcript_data");
         var active_nodes = parent.querySelectorAll(".active-marker");
-        //remove previous active
-        active_nodes.forEach((mark) => {
-            if (mark.textContent.toLowerCase() === token) {
-                mark.classList.remove("active-marker");
-                return;
-            }
-        });
-        var nodes = parent.querySelectorAll("[data-mark_index='" + index + "']");
-        nodes.forEach((mark) => {
-            if (mark.textContent.toLowerCase() === token) {
-                //set active + scroll
-                mark.classList.add("active-marker");
-                let parentTopOffset = parent.offsetTop;
-                parent.scrollTo({
-                    top: mark.offsetTop - parentTopOffset,
-                    behavior: 'smooth'
-                });
-                return;
-            }
-        })
+        setTimeout(function () {
+            //remove previous active
+            active_nodes.forEach((mark) => {
+                if (mark.textContent.toLowerCase() === token) {
+                    mark.classList.remove("active-marker");
+                    return;
+                }
+            });
+            var nodes = parent.querySelectorAll("[data-mark_index='" + index + "']");
+            nodes.forEach((mark) => {
+                if (mark.textContent.toLowerCase() === token) {
+                    //set active + scroll
+                    mark.classList.add("active-marker");
+                    let parentTopOffset = parent.offsetTop;
+                    parent.scrollTo({
+                        top: mark.offsetTop - parentTopOffset,
+                        behavior: 'smooth'
+                    });
+                    return;
+                }
+            })
+        }, 0)
     }
 
     const searchedTerms = (
@@ -171,10 +186,10 @@ const Search = ({ setTokens, tokens, textToHightlight }) => {
                     <ul className={showResults ? 'visible' : 'hidden'}>{searchedTerms}</ul>
                     <ul>
                         {
-                            (hits.length > 0) ?
-                                Object.keys(hits).map((key) => {
-                                    return <li>{key} -- {counter.current[key].active}</li>
-                                }) : null
+                            // (hits.length > 0) ?
+                            //     Object.keys(hits).map((key) => {
+                            //         return <li>{key} -- {counter.current[key].active}</li>
+                            //     }) : null
                         }
                     </ul>
                 </div>

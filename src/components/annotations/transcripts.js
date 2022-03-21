@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import TranscriptData from "./TranscriptData";
 import { descLoader } from '../../helpers/loaders'
@@ -12,19 +12,26 @@ const Transcripts = (props) => {
     const [annotations, setAnnotations] = useState([]);
     const [isFetching, setIsFetching] = useState(true);
     const transcriptContainerRef = React.useRef(null);
-    const [searchWords, setSearchWords] = useState([])
+    const [searchWords, setSearchWords] = useState([]);
+    const annotation = useRef(null)
     let isMouseOver = false;
     const isMouseOverRef = React.useRef(isMouseOver);
     const setIsMouseOver = (state) => {
         isMouseOverRef.current = state;
         isMouseOver = state;
     };
+    const selectAnn = (state) => {
+        annotation.current = state;
+    }
+
     let textToHightlight = React.useRef("");
 
     useEffect(() => {
         try {
-            var itemNo = selectedVideo?.videoCount ? parseInt(selectedVideo?.videoCount.replace('item-', '')) : 0;
-            setAnnotations(getTranscripts(props.data, itemNo));
+            let itemNo = selectedVideo?.videoCount ? parseInt(selectedVideo?.videoCount.replace('item-', '')) : 0;
+            let data = getTranscripts(props.data, itemNo);
+            setAnnotations(data);
+            selectAnn(data[0]);
             setIsFetching(false);
         } catch (err) {
             console.log(err)
@@ -33,7 +40,16 @@ const Transcripts = (props) => {
         }
     }, [props, selectedVideo]);
 
-    const handleSelectTranscript = (e) => selectTranscript(e.target.value);
+    // useEffect(() => {
+    //     if (annotations.length <= 0) return;
+        
+    // }, [transcript])
+
+    const handleSelectTranscript = (e) => {
+        selectTranscript(e.target.value); 
+        console.log(e.target.value, transcript);
+        selectAnn(annotations[parseInt(e.target.value) - 1])
+    }
 
     const handleAutoScroll = (e) => {
         if (e.target.checked) {
@@ -101,7 +117,7 @@ const Transcripts = (props) => {
 
     return (
         <div>
-            <Search setTokens={setSearchWords} tokens={searchWords} textToHightlight={textToHightlight.current}/>
+            <Search setTokens={setSearchWords} tokens={searchWords} annotation={annotation.current} setAnnotation={selectAnn} />
             <div className="" onMouseOver={() => handleMouseOver(true)} onMouseLeave={() => handleMouseOver(false)}>
                 <label><input type="checkbox" value="1" onChange={handleAutoScroll} /> Auto Scroll with Media</label>
                 <div className="custom-select">
@@ -113,12 +129,10 @@ const Transcripts = (props) => {
                     </select>
                 </div>
                 <div className="custom-height scroll overflow-x-hidden overflow-y-auto mt-2 bg-white rounded-sm p-2" id="transcript_data" ref={transcriptContainerRef}>
-                    <>
-                        {annotations[parseInt(transcript) - 1].transcript.map((point, index) => {
+                        {annotation.current.transcript.map((point, index) => {
                             return <TranscriptData point={point} index={index} autoScrollAndHighlight={autoScrollAndHighlight} key={index} searchWords={searchWords} />
                         }
                         )}
-                    </>
                 </div>
             </div>
         </div>

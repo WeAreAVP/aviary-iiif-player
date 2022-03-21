@@ -57,7 +57,6 @@ const TranscriptData = (props) => {
 
 
   return (
-    <>
       <div
         style={{ marginTop: '1.25rem', padding: '0.5rem' }}
         className="flex space-x-4 p-2 hover:bg-gray-50 transcript_item"
@@ -72,7 +71,6 @@ const TranscriptData = (props) => {
         <div className="w-3/4 transcript_text">{ReactHtmlParser(props.point.text)}</div>
         <hr />
       </div>
-    </>
   );
 };
 
