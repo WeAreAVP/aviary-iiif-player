@@ -10,16 +10,7 @@ const Search = ({ tokens, setTokens, annotation }) => {
 
     useEffect(() => {
         if (annotation == null) return;
-        console.log(annotation, tokens);
-        annotation.transcript.map((point) => {
-            let ele = document.createElement('div');
-            ele.innerHTML = point.text;
-            ele.innerHTML = ele.innerHTML.replace(/<\/?mark[^>]*>/g, "");
-            if (tokens.length > 0) highlight(ele, tokens);
-            point.text = ele.innerHTML
-        });
-        setHits({ ...highlightCounter.current });
-        highlightCounter.current = {};
+        updateAnnotation(tokens);
         setTokens([...tokens]);
     }, [annotation]);
 
@@ -27,52 +18,27 @@ const Search = ({ tokens, setTokens, annotation }) => {
         e.preventDefault();
         if (query == "" || query == null) return;
         if (typeof tokens.find(ele => { return ele.toLowerCase() === query.toLowerCase(); }) != "undefined") return; 
-        let newTokens = [...tokens, query];
+        let newTokens = [...tokens, query];  
+        updateAnnotation([query], false);
         setTokens([...newTokens]);
         setQuery("");
         setShowResults(true);
-        annotation.transcript.map((point, index) => {
-            let ele = document.createElement('div');
-            ele.innerHTML = point.text;
-            highlight(ele, [query]);
-            point.text = ele.innerHTML
-        });
-        setHits({ ...hits, ...highlightCounter.current });
-        highlightCounter.current = {};
+        
     }
 
     const handleDelete = (e) => {
         e.preventDefault();
         let index = e.currentTarget.getAttribute('index')
         let copy = [...tokens]
-        let key = copy.splice(index, 1);
+        copy.splice(index, 1);
+        updateAnnotation(copy);
         setTokens([...copy]);
-        //TODO: need to delete only 1 token then no need to highlight again
-        setHits({});
-        annotation.transcript.map((point) => {
-            let ele = document.createElement('div');
-            ele.innerHTML = point.text;
-            ele.innerHTML = ele.innerHTML.replace(/<\/?mark[^>]*>/g, "");
-            if (copy.length > 0 && copy[0] != "") highlight(ele, copy);
-            point.text = ele.innerHTML
-        });
-        setHits({ ...highlightCounter.current });
-        highlightCounter.current = {};
-        // setAnnotation(annotation);
     }
 
     const toggleResults = () => setShowResults((showResults == true) ? false : true);
     const resetTokens = () => {
         setTokens([]);
-        // domTrascripts.innerHTML = domTrascripts.innerHTML.replace(/<\/?mark[^>]*>/g, "");
-        annotation.transcript.map((point) => {
-            let ele = document.createElement('div');
-            ele.innerHTML = point.text;
-            ele.innerHTML = ele.innerHTML.replace(/<\/?mark[^>]*>/g, "");
-            point.text = ele.innerHTML
-        });
-        setHits({});
-        // setAnnotation(annotation);
+        updateAnnotation([]);
     }
 
     const prevIndex = (e) => {
@@ -80,20 +46,15 @@ const Search = ({ tokens, setTokens, annotation }) => {
         let counter = { ...hits };
         if (counter[index].active > 0) {
             counter[index].active -= 1;
-            // let span = e.currentTarget.parentElement.getElementsByTagName('span');
-            // span.textContent = counter[index].active + "/" + counter[index].total
             navActiveMarker(index, counter[index].active);
             setHits({ ...counter });
         }
-        // console.log('prev', counter.current)
     }
 
     const nextIndex = (e) => {
-        console.log('next')
         let index = e.currentTarget.getAttribute('index');
         let counter = { ...hits };
         if (counter[index].active < counter[index].total) {
-            // let span = e.currentTarget.parentNode.getElementsByTagName('span');
             counter[index].active = counter[index].active + 1;
             navActiveMarker(index, counter[index].active);
             setHits({ ...counter });
@@ -162,6 +123,18 @@ const Search = ({ tokens, setTokens, annotation }) => {
         });
     }
 
+    const updateAnnotation = (queries, deleteMarks = true) => {
+        annotation.transcript.map((point) => {
+            let ele = document.createElement('div');
+            ele.innerHTML = point.text;
+            if (deleteMarks) ele.innerHTML = ele.innerHTML.replace(/<\/?mark[^>]*>/g, "");
+            if (queries.length > 0 && queries[0] != "") highlight(ele, queries);
+            point.text = ele.innerHTML
+        });
+        (deleteMarks) ? setHits({ ...highlightCounter.current }) : setHits({ ...hits, ...highlightCounter.current });
+        highlightCounter.current = {};
+    }
+
     React.useEffect(() => {
         // Clean up state on component unmount
         return () => {
@@ -200,17 +173,6 @@ const Search = ({ tokens, setTokens, annotation }) => {
                                         <button onClick={handleDelete} index={index}>x</button>
                                         </li>;
                                 })
-                                // Object.keys(hits).map((key, index) => {
-                                //     let hit = hits[key];
-                                //     return <li key={index}>
-                                //         <div>{tokens.find(ele => { return ele.toLowerCase() === key; })}
-                                //             <button onClick={prevIndex} index={hit.match.toLowerCase()}>{' < '}</button>
-                                //             <span>{hit.active}/{hit.total}</span>
-                                //             <button onClick={nextIndex} index={hit.match.toLowerCase()}>{' > '}</button>
-                                //         </div>
-                                //         <button onClick={handleDelete} index={index}>x</button>
-                                //     </li>;
-                                // })
                             }
                         </>
                     </ul>
