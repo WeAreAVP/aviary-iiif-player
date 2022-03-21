@@ -16,7 +16,7 @@ const Transcripts = (props) => {
     const [annotation, selectAnn] = useState(null)
     let isMouseOver = false;
     const isMouseOverRef = React.useRef(isMouseOver);
-    
+
     const setIsMouseOver = (state) => {
         isMouseOverRef.current = state;
         isMouseOver = state;
@@ -37,7 +37,7 @@ const Transcripts = (props) => {
     }, [props, selectedVideo]);
 
     const handleSelectTranscript = (e) => {
-        selectTranscript(e.target.value); 
+        selectTranscript(e.target.value);
         console.log(e.target.value, transcript);
         selectAnn(annotations[parseInt(e.target.value) - 1])
     }
@@ -113,10 +113,12 @@ const Transcripts = (props) => {
                     </select>
                 </div>
                 <div className="custom-height scroll overflow-x-hidden overflow-y-auto mt-2 bg-white rounded-sm p-2" id="transcript_data" ref={transcriptContainerRef}>
+                    <>
                         {annotation.transcript.map((point, index) => {
                             return <TranscriptData point={point} index={index} autoScrollAndHighlight={autoScrollAndHighlight} key={index} searchWords={searchWords} />
                         }
                         )}
+                    </>
                 </div>
             </div>
         </div>

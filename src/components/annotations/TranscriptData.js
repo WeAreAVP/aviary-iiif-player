@@ -1,32 +1,15 @@
-import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import React, { useEffect } from "react";
 import ReactHtmlParser from 'react-html-parser';
 import { getHHMMSSFromSeconds } from '../../helpers/utils'
 
 const TranscriptData = (props) => {
-
-  const dispatch = useDispatch();
   let player = null;
   let textRefs = React.useRef([]);
 
-  const handleTranscriptTextClick = (e) => {
-    e.preventDefault();
-    if (player) {
-      player.currentTime(e.currentTarget.getAttribute('starttime'));
-    }
-
-    textRefs.current.map((tr) => {
-      if (tr && tr.classList.contains('active')) {
-        tr.classList.remove('active');
-      }
-    });
-    e.currentTarget.classList.add('active');
-  };
-
-  React.useEffect(() => {
+  useEffect(() => {
     const domPlayer = document.getElementById("aviary-iiif-media-player");
     if (!domPlayer) {
-      console.error( "Cannot find player on page. Transcript synchronization is disabled.");
+      console.error("Cannot find player on page. Transcript synchronization is disabled.");
     } else {
       player = domPlayer.player;
       player.on('timeupdate', function (e) {
@@ -48,15 +31,28 @@ const TranscriptData = (props) => {
         });
       });
     }
-
     // Clean up state on component unmount
     return () => {
       player = null;
     };
-  }, []);
+  });
 
+  const handleTranscriptTextClick = (e) => {
+    e.preventDefault();
+    if (player) {
+      player.currentTime(e.currentTarget.getAttribute('starttime'));
+    }
+
+    textRefs.current.map((tr) => {
+      if (tr && tr.classList.contains('active')) {
+        tr.classList.remove('active');
+      }
+    });
+    e.currentTarget.classList.add('active');
+  };
 
   return (
+    <>
       <div
         style={{ marginTop: '1.25rem', padding: '0.5rem' }}
         className="flex space-x-4 p-2 hover:bg-gray-50 transcript_item"
@@ -71,6 +67,7 @@ const TranscriptData = (props) => {
         <div className="w-3/4 transcript_text">{ReactHtmlParser(props.point.text)}</div>
         <hr />
       </div>
+    </>
   );
 };
 
