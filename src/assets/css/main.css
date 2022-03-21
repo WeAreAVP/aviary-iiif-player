@@ -227,3 +227,17 @@ html {
 .transcript_data .transcript_item.active {
     background: #ddeaf0;
 }
+
+.highlight-marker {
+    cursor: pointer;
+    border: 1px solid #ffc800;
+    background: rgba(254,181,66,0.15) !important;
+    color: #222 !important;
+}
+
+.active-marker {
+    background: #e5ebed !important;
+    border: 1px solid #204f92;
+    border-radius: 2px;
+    color: #222;
+}

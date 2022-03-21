@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import ReactHtmlParser from 'react-html-parser';
-import { isType, getHHMMSSFromSeconds } from '../../helpers/utils'
+import { getHHMMSSFromSeconds } from '../../helpers/utils'
 
 const TranscriptData = (props) => {
 
@@ -60,7 +60,7 @@ const TranscriptData = (props) => {
     <>
       <div
         style={{ marginTop: '1.25rem', padding: '0.5rem' }}
-        className="flex space-x-4 p-2 hover:bg-gray-200 transcript_item"
+        className="flex space-x-4 p-2 hover:bg-gray-50 transcript_item"
         onClick={handleTranscriptTextClick}
         starttime={props.point.starttime}
         endtime={props.point.endtime}
