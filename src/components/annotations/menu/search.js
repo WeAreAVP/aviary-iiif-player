@@ -1,23 +1,16 @@
 import React, { useState, useEffect, useRef } from "react";
 
-const Search = ({ setTokens, tokens, annotation, setAnnotation }) => {
+const Search = ({ tokens, setTokens, annotation }) => {
     const [query, setQuery] = useState("");
     const [showResults, setShowResults] = useState(true);
-    let counter = useRef({});
-    let domTrascripts = null;
-    const handleChange = (e) => { setQuery(e.target.value) }
-    let hits = {}
+    let highlightCounter = useRef({});
+    const [hits, setHits] = useState({});
 
-    useEffect(() => {
-        // if (textToHightlight != null) domTrascripts =  textToHightlight
-        domTrascripts = document.getElementById("transcript_data");
-        if (!domTrascripts) console.error("No Transcript found");
-    });
+    const handleChange = (e) => { setQuery(e.target.value) }
 
     useEffect(() => {
         if (annotation == null) return;
-        console.log(annotation)
-        counter.current = {};
+        console.log(annotation, tokens);
         annotation.transcript.map((point) => {
             let ele = document.createElement('div');
             ele.innerHTML = point.text;
@@ -25,12 +18,15 @@ const Search = ({ setTokens, tokens, annotation, setAnnotation }) => {
             if (tokens.length > 0) highlight(ele, tokens);
             point.text = ele.innerHTML
         });
-        setAnnotation(annotation);
+        setHits({ ...highlightCounter.current });
+        highlightCounter.current = {};
+        setTokens([...tokens]);
     }, [annotation]);
 
     const handleSubmit = (e) => {
         e.preventDefault();
         if (query == "" || query == null) return;
+        if (typeof tokens.find(ele => { return ele.toLowerCase() === query.toLowerCase(); }) != "undefined") return; 
         let newTokens = [...tokens, query];
         setTokens([...newTokens]);
         setQuery("");
@@ -41,6 +37,8 @@ const Search = ({ setTokens, tokens, annotation, setAnnotation }) => {
             highlight(ele, [query]);
             point.text = ele.innerHTML
         });
+        setHits({ ...hits, ...highlightCounter.current });
+        highlightCounter.current = {};
     }
 
     const handleDelete = (e) => {
@@ -50,38 +48,55 @@ const Search = ({ setTokens, tokens, annotation, setAnnotation }) => {
         let key = copy.splice(index, 1);
         setTokens([...copy]);
         //TODO: need to delete only 1 token then no need to highlight again
-        // delete counter.current[key[0]];
-        counter.current = {}
-        console.log('handleDelete', counter)
-        domTrascripts.innerHTML = domTrascripts.innerHTML.replace(/<\/?mark[^>]*>/g, "");
-        if (copy != null && copy.length > 0 && copy[0] != "") highlight(domTrascripts, copy);
+        setHits({});
+        annotation.transcript.map((point) => {
+            let ele = document.createElement('div');
+            ele.innerHTML = point.text;
+            ele.innerHTML = ele.innerHTML.replace(/<\/?mark[^>]*>/g, "");
+            if (copy.length > 0 && copy[0] != "") highlight(ele, copy);
+            point.text = ele.innerHTML
+        });
+        setHits({ ...highlightCounter.current });
+        highlightCounter.current = {};
+        // setAnnotation(annotation);
     }
 
     const toggleResults = () => setShowResults((showResults == true) ? false : true);
     const resetTokens = () => {
         setTokens([]);
-        domTrascripts.innerHTML = domTrascripts.innerHTML.replace(/<\/?mark[^>]*>/g, "");
-        counter.current = {}
+        // domTrascripts.innerHTML = domTrascripts.innerHTML.replace(/<\/?mark[^>]*>/g, "");
+        annotation.transcript.map((point) => {
+            let ele = document.createElement('div');
+            ele.innerHTML = point.text;
+            ele.innerHTML = ele.innerHTML.replace(/<\/?mark[^>]*>/g, "");
+            point.text = ele.innerHTML
+        });
+        setHits({});
+        // setAnnotation(annotation);
     }
 
     const prevIndex = (e) => {
-        let index = e.currentTarget.getAttribute('index')
-        if (counter.current[index].active > 0) {
-            counter.current[index].active -= 1;
-            let span = e.currentTarget.parentElement.getElementsByTagName('span');
-            span.textContent = counter.current[index].active + "/" + counter.current[index].total
-            navActiveMarker(index, counter.current[index].active);
+        let index = e.currentTarget.getAttribute('index');
+        let counter = { ...hits };
+        if (counter[index].active > 0) {
+            counter[index].active -= 1;
+            // let span = e.currentTarget.parentElement.getElementsByTagName('span');
+            // span.textContent = counter[index].active + "/" + counter[index].total
+            navActiveMarker(index, counter[index].active);
+            setHits({ ...counter });
         }
-        console.log('prev', counter.current)
+        // console.log('prev', counter.current)
     }
 
     const nextIndex = (e) => {
         console.log('next')
-        let index = e.currentTarget.getAttribute('index')
-        if (counter.current[index].active < counter.current[index].total) {
+        let index = e.currentTarget.getAttribute('index');
+        let counter = { ...hits };
+        if (counter[index].active < counter[index].total) {
             // let span = e.currentTarget.parentNode.getElementsByTagName('span');
-            counter.current[index].active = counter.current[index].active + 1;
-            navActiveMarker(index, counter.current[index].active);
+            counter[index].active = counter[index].active + 1;
+            navActiveMarker(index, counter[index].active);
+            setHits({ ...counter });
         }
     }
 
@@ -112,20 +127,6 @@ const Search = ({ setTokens, tokens, annotation, setAnnotation }) => {
         }, 0)
     }
 
-    const searchedTerms = (
-        tokens.map((q, index) => {
-            let hit = counter.current.hasOwnProperty(q.toLowerCase()) ? counter.current[q.toLowerCase()] : { total: 0, active: 0 }
-            return <li key={index}>
-                <div>{q}
-                    <button onClick={prevIndex} index={q.toLowerCase()}>{' < '}</button>
-                    <span>{hit.active}/{hit.total}</span>
-                    <button onClick={nextIndex} index={q.toLowerCase()}>{' > '}</button>
-                </div>
-                <button onClick={handleDelete} index={index}>x</button>
-            </li>;
-        })
-    )
-
     const highlight = (elem, keywords, caseSensitive = false, cls = 'highlight-marker') => {
         if (!elem) return null;
         const flags = caseSensitive ? 'g' : 'gi';
@@ -140,17 +141,16 @@ const Search = ({ setTokens, tokens, annotation, setAnnotation }) => {
                 const frag = document.createDocumentFragment();
                 let lastIdx = 0;
                 child.textContent.replace(keywordRegex, (match, idx) => {
-                    if (counter.current.hasOwnProperty(match.toLowerCase())) {
-                        counter.current[match.toLowerCase()]['total'] += 1
+                    if (highlightCounter.current.hasOwnProperty(match.toLowerCase())) {
+                        highlightCounter.current[match.toLowerCase()]['total'] += 1
                     } else {
-                        counter.current[match.toLowerCase()] = { total: 1, active: 0 }
+                        highlightCounter.current[match.toLowerCase()] = { total: 1, active: 0 }
                     }
-                    // console.log('high',counter.current)
                     const part = document.createTextNode(child.textContent.slice(lastIdx, idx));
                     const highlighted = document.createElement('mark');
                     highlighted.textContent = match;
                     highlighted.classList.add(cls);
-                    highlighted.dataset.mark_index = counter.current[match.toLowerCase()]['total'];
+                    highlighted.dataset.mark_index = highlightCounter.current[match.toLowerCase()]['total'];
                     frag.appendChild(part);
                     frag.appendChild(highlighted);
                     lastIdx = idx + match.length;
@@ -165,7 +165,10 @@ const Search = ({ setTokens, tokens, annotation, setAnnotation }) => {
     React.useEffect(() => {
         // Clean up state on component unmount
         return () => {
-            domTrascripts = null;
+            setQuery("");
+            setShowResults(true);
+            highlightCounter = {};
+            setHits({});
         };
     }, []);
 
@@ -183,14 +186,33 @@ const Search = ({ setTokens, tokens, annotation, setAnnotation }) => {
                         </label>
                         <button onClick={resetTokens} className="float-right">Clear all search terms</button>
                     </div>
-                    <ul className={showResults ? 'visible' : 'hidden'}>{searchedTerms}</ul>
-                    <ul>
-                        {
-                            // (hits.length > 0) ?
-                            //     Object.keys(hits).map((key) => {
-                            //         return <li>{key} -- {counter.current[key].active}</li>
-                            //     }) : null
-                        }
+                    <ul className={showResults ? 'visible' : 'hidden'}>
+                        <>
+                            {
+                                tokens.map((q, index) => {
+                                    let hit = hits.hasOwnProperty(q.toLowerCase()) ? hits[q.toLowerCase()] : { total: 0, active: 0 }
+                                    return <li key={index}>
+                                        <div>{q} 
+                                        <button onClick={prevIndex} index={q.toLowerCase()}>{' < '}</button> 
+                                        <span>{hit.active}/{hit.total}</span>
+                                        <button onClick={nextIndex} index={q.toLowerCase()}>{' > '}</button>
+                                        </div> 
+                                        <button onClick={handleDelete} index={index}>x</button>
+                                        </li>;
+                                })
+                                // Object.keys(hits).map((key, index) => {
+                                //     let hit = hits[key];
+                                //     return <li key={index}>
+                                //         <div>{tokens.find(ele => { return ele.toLowerCase() === key; })}
+                                //             <button onClick={prevIndex} index={hit.match.toLowerCase()}>{' < '}</button>
+                                //             <span>{hit.active}/{hit.total}</span>
+                                //             <button onClick={nextIndex} index={hit.match.toLowerCase()}>{' > '}</button>
+                                //         </div>
+                                //         <button onClick={handleDelete} index={index}>x</button>
+                                //     </li>;
+                                // })
+                            }
+                        </>
                     </ul>
                 </div>
             ) : null}

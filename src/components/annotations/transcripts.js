@@ -13,18 +13,14 @@ const Transcripts = (props) => {
     const [isFetching, setIsFetching] = useState(true);
     const transcriptContainerRef = React.useRef(null);
     const [searchWords, setSearchWords] = useState([]);
-    const annotation = useRef(null)
+    const [annotation, selectAnn] = useState(null)
     let isMouseOver = false;
     const isMouseOverRef = React.useRef(isMouseOver);
+    
     const setIsMouseOver = (state) => {
         isMouseOverRef.current = state;
         isMouseOver = state;
     };
-    const selectAnn = (state) => {
-        annotation.current = state;
-    }
-
-    let textToHightlight = React.useRef("");
 
     useEffect(() => {
         try {
@@ -39,11 +35,6 @@ const Transcripts = (props) => {
             setIsFetching(false);
         }
     }, [props, selectedVideo]);
-
-    // useEffect(() => {
-    //     if (annotations.length <= 0) return;
-        
-    // }, [transcript])
 
     const handleSelectTranscript = (e) => {
         selectTranscript(e.target.value); 
@@ -103,13 +94,6 @@ const Transcripts = (props) => {
         };
     }, []);
 
-    useEffect(() => {
-        if(transcriptContainerRef.current != null){
-            // console.log(transcriptContainerRef.current.textContent);
-            textToHightlight.current = transcriptContainerRef.current;
-        }
-    })
-
 
     if (isFetching) return descLoader();
     if (dataError) return <span>Annotation structure is not correct</span>;
@@ -117,7 +101,7 @@ const Transcripts = (props) => {
 
     return (
         <div>
-            <Search setTokens={setSearchWords} tokens={searchWords} annotation={annotation.current} setAnnotation={selectAnn} />
+            <Search setTokens={setSearchWords} tokens={searchWords} annotation={annotation} />
             <div className="" onMouseOver={() => handleMouseOver(true)} onMouseLeave={() => handleMouseOver(false)}>
                 <label><input type="checkbox" value="1" onChange={handleAutoScroll} /> Auto Scroll with Media</label>
                 <div className="custom-select">
@@ -129,7 +113,7 @@ const Transcripts = (props) => {
                     </select>
                 </div>
                 <div className="custom-height scroll overflow-x-hidden overflow-y-auto mt-2 bg-white rounded-sm p-2" id="transcript_data" ref={transcriptContainerRef}>
-                        {annotation.current.transcript.map((point, index) => {
+                        {annotation.transcript.map((point, index) => {
                             return <TranscriptData point={point} index={index} autoScrollAndHighlight={autoScrollAndHighlight} key={index} searchWords={searchWords} />
                         }
                         )}
