@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import ReactHtmlParser from 'react-html-parser';
 import { getHHMMSSFromSeconds } from '../../helpers/utils'
+import moment from 'moment'
 
 const TranscriptData = (props) => {
   let player = null;
@@ -62,7 +63,7 @@ const TranscriptData = (props) => {
         ref={(el) => (textRefs.current[props.index] = el)}
       >
         <span style={{ cursor: 'pointer', fontWeight: '600' }} className="cursor-pointer hover:underline hover:text-blue-800 w-1/4 transcript_time">
-          {getHHMMSSFromSeconds(props.point.starttime)}
+          {moment.utc(props.point.starttime*1000).format('HH:mm:ss')}
         </span>
         <div className="w-3/4 transcript_text">{ReactHtmlParser(props.point.text)}</div>
         <hr />
