@@ -103,7 +103,10 @@ const Transcripts = (props) => {
         <div>
             <Search setTokens={setSearchWords} tokens={searchWords} annotation={annotation} />
             <div className="" onMouseOver={() => handleMouseOver(true)} onMouseLeave={() => handleMouseOver(false)}>
-                <label><input type="checkbox" value="1" onChange={handleAutoScroll} /> Auto Scroll with Media</label>
+                <div className="auto-scroll-holder">
+                    <input type="checkbox" value="1" id="autoscrollchange" onChange={handleAutoScroll} />
+                    <label htmlFor="autoscrollchange">Auto Scroll with Media</label>
+                </div>
                 <div className="custom-select">
                     <label for="annotation">Annotation Sets</label>
                     <select className="px-4 pt-4 pb-3 border w-full rounded-md" value={transcript} onChange={handleSelectTranscript}>

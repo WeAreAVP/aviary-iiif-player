@@ -148,29 +148,33 @@ const Search = ({ tokens, setTokens, annotation }) => {
     return (
         <div id="transcript_search_box">
             <form onSubmit={handleSubmit}>
-                <input value={query} type="text" onChange={handleChange} placeholder="Search this Resource" className="px-4 pt-4 pb-3 border w-full rounded-md" />
+                <input value={query} type="text" onChange={handleChange} placeholder="Search this Resource" className="px-4 pt-4 pb-4 border w-full rounded-md" />
             </form>
             {(tokens.length > 0) ? (
                 <div id="searched_keywords">
-                    <div>
+                    <div className="search-result">
                         <label onClick={toggleResults}>
-                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                            <svg class="" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                             Results
                         </label>
-                        <button onClick={resetTokens} className="float-right">Clear all search terms</button>
+                        <button onClick={resetTokens} className="clear-terms">Clear all search terms</button>
                     </div>
-                    <ul className={showResults ? 'visible' : 'hidden'}>
+                    <ul className={showResults ? 'searched-list visible' : 'searched-list hidden'}>
                         <>
                             {
                                 tokens.map((q, index) => {
                                     let hit = hits.hasOwnProperty(q.toLowerCase()) ? hits[q.toLowerCase()] : { total: 0, active: 0 }
                                     return <li key={index}>
-                                        <div>{q} 
-                                        <button onClick={prevIndex} index={q.toLowerCase()}>{' < '}</button> 
-                                        <span>{hit.active}/{hit.total}</span>
-                                        <button onClick={nextIndex} index={q.toLowerCase()}>{' > '}</button>
+                                        <div>
+                                        <div className="search-button-holder">
+                                            <span className="total-hit">{hit.active}/{hit.total}</span> {q}
+                                            <div className="ml-4 inline-block">
+                                                <button className="prev-btn" onClick={prevIndex} index={q.toLowerCase()}>{' < '}</button> 
+                                                <button className="next-btn" onClick={nextIndex} index={q.toLowerCase()}>{' > '}</button>
+                                            </div>
+                                        </div>
                                         </div> 
-                                        <button onClick={handleDelete} index={index}>x</button>
+                                        <button onClick={handleDelete} index={index} className="remove-btn">+</button>
                                         </li>;
                                 })
                             }
