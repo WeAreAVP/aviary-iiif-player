@@ -9,6 +9,7 @@ export function getVideos(jsonData) {
         video["manifestURL"] = jsonData.id;
         video["mediaInfo"] = info[0];
         video["label"] = info.splice(1).join(' - ');
+        video['captions'] = getCaptions(jsonData, i);
         videos.push(video);
     }
     return videos;
@@ -111,4 +112,21 @@ function formatIndexes(transcript) {
         }
     });
     return Object.values(newTranscript);
+}
+
+function getCaptions(data, itemNo) {
+    let captions = [];
+    if (data?.items && data?.items[itemNo]?.annotations) {
+        let items = data?.items[itemNo]?.annotations;
+        for (let i = 0; i < items.length; i++) {
+            if (items[i].items[0].motivation == 'subtitling')
+            captions.push({
+                    label: items[i].label?.en[0],
+                    language: items[i].items[0].body.language,
+                    src: items[i].items[0].target
+                });
+        }
+    }
+    
+    return captions;
 }
