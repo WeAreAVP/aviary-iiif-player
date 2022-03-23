@@ -34,7 +34,8 @@ const File = (props) => {
                 <span style={{position: 'absolute', right: '0.25rem', bottom: '0.25rem', fontWeight: 'bold', fontSize: '0.75rem', lineHeight: '1rem', background: 'black', color: 'white', paddingLeft: '0.25rem', paddingRight: '0.25rem', borderRadius:'0.25rem'}} className="absolute right-1 bottom-1 font-bold text-xs bg-black text-white px-1 rounded">{moment.utc(props.duration*1000).format('HH:mm:ss')}</span>
             </div>
             <div className="">
-                <div style={{fontWeight: '600', display: 'block', fontSize: '0.875rem', lineHeight: '1.25rem'}} className="custom-title font-semibold block text-sm">{props.label}</div>
+                <div style={{fontWeight: '600', display: 'block', fontSize: '0.875rem', lineHeight: '1.25rem'}} className="custom-title font-semibold block text-sm">{props.mediaInfo}</div>
+                <div className="font-normal text-sm">{props.label}</div>
             </div>
         </div>
     )

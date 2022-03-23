@@ -2,10 +2,13 @@ export function getVideos(jsonData) {
     let videos = [];
     for (let i = 0; i < jsonData.items.length; i++) {
         let video = {...jsonData?.items[i]?.items[0]?.items[0]?.body};
+        let label = jsonData?.items[i]?.label?.en[0];
+        let info = label.split(/ - /)
         video["thumbnail"] = jsonData?.items[i]?.thumbnail[0]?.id;
         video["videoCount"] = "item-" + i;
-        video["manifest_URL"] = jsonData.id;
-        video["label"] = jsonData?.items[i]?.label?.en[0];
+        video["manifestURL"] = jsonData.id;
+        video["mediaInfo"] = info[0];
+        video["label"] = info.splice(1).join(' - ');
         videos.push(video);
     }
     return videos;
