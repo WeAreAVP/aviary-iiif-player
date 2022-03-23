@@ -123,7 +123,8 @@ function getCaptions(data, itemNo) {
             captions.push({
                     label: items[i].label?.en[0],
                     language: items[i].items[0].body.language,
-                    src: items[i].items[0].target
+                    src: items[i].items[0].target,
+                    kind: 'captions'
                 });
         }
     }
