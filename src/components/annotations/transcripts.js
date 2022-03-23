@@ -38,7 +38,6 @@ const Transcripts = (props) => {
 
     const handleSelectTranscript = (e) => {
         selectTranscript(e.target.value);
-        console.log(e.target.value, transcript);
         selectAnn(annotations[parseInt(e.target.value) - 1])
     }
 

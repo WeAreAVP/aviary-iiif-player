@@ -31,10 +31,11 @@ export function getTranscripts(data, itemNo) {
     if (data?.items && data?.items[itemNo]?.annotations) {
         let items = data?.items[itemNo]?.annotations;
         for (let i = 0; i < items.length; i++) {
-            annotations.push({
-                label: items[i].label?.en[0],
-                transcript: formatIndexes(items[i].items)
-            });
+            if (items[i].items[0].motivation != 'subtitling')
+                annotations.push({
+                    label: items[i].label?.en[0],
+                    transcript: formatIndexes(items[i].items)
+                });
         }
     }
     
@@ -73,10 +74,20 @@ export function getHHMMSSFromSeconds(totalSeconds) {
     let content = "";
     if (isType('array', point.body)) {
         let values = [];
+        let label = point.body[0].label.en[0];
         point.body.map(({ value }, key) => {
-            values.push(value.replaceAll("\n", "<br/>"));
+            if(['Keywords', 'Subjects'].includes(label)) {
+                values.push('<span class="inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-gray-700 bg-gray-200 rounded">' + value + '</span>');
+            } else if (label == "Title") {
+                values.push('<strong>'+ value +'</strong>')
+            } else {
+                values.push(value.replaceAll("\n", "<br/>"));
+            }
           });
-        content = values.join(" ")
+        content = values.join(" ");
+        if (!['Title', 'Synopsis'].includes(label)) {
+            content = '<strong>'+ label +': </strong>' + content;
+        }
     } else {
         content = point.body.value.replaceAll("\n", "<br/>");
     }
@@ -93,9 +104,11 @@ export function getHHMMSSFromSeconds(totalSeconds) {
 function formatIndexes(transcript) {
     let newTranscript = {};
     transcript.map((point, index) => {
-        let hash = parseAnnotation(point);
-        (!newTranscript.hasOwnProperty(hash.starttime)) ? 
-        newTranscript[hash.starttime] = hash : newTranscript[hash.starttime]['text'] += "<br >" + hash["text"];
+        if (point.motivation != 'subtitling'){
+            let hash = parseAnnotation(point);
+            (!newTranscript.hasOwnProperty(hash.starttime)) ? 
+            newTranscript[hash.starttime] = hash : newTranscript[hash.starttime]['text'] += "<br >" + hash["text"];
+        }
     });
     return Object.values(newTranscript);
 }
