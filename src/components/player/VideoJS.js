@@ -3,24 +3,14 @@ import { useSelector } from "react-redux";
 import videojs from "video.js";
 import "videojs-youtube";
 import '@devmobiliza/videojs-vimeo/dist/videojs-vimeo.esm';
+import 'videojs-vr';
 // require('!style-loader!css-loader!video.js/dist/video-js.css');
+require('!style-loader!css-loader!videojs-vr/dist/videojs-vr.css');
 
 
 export const VideoJS = (props) => {
-    // ----
     const videoRef = useRef(null);
-
     const carouselID = useSelector(state => state.selectedItem);
-    // const targetID = useSelector(selectTarget);
-
-    // useEffect(() => {
-    //     function handleTimeStamps() {
-    //         videoRef.current.currentTime = targetID;
-    //     }
-    //     handleTimeStamps();
-    // }, [targetID]);
-    // ----
-
     const playerRef = useRef(null);
     const { options, onReady } = props;
 
@@ -34,6 +24,11 @@ export const VideoJS = (props) => {
                 console.log("player is ready");
                 onReady && onReady(player);
                 if (carouselID) carouselID.captions.forEach(track => player.addRemoteTextTrack(track));
+                if (carouselID?.is_3d) {
+                    player.mediainfo = player.mediainfo || {};
+                    player.mediainfo.projection = '360';
+                    player.vr({projection: 'AUTO'})
+                }
             }));
             // player.pip();
         } else {
