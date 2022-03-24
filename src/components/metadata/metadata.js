@@ -20,7 +20,7 @@ const Metadata = (props) => {
     }, [props])
 
     if (dataError) {
-        return <span data-testid='struct'>Struct is not Correct</span>
+        return <span data-testid='struct'>Metadata Structure is not Correct</span>
     }
 
     if (isFetching) return descLoader();

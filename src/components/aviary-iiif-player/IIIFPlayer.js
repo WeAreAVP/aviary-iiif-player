@@ -22,8 +22,8 @@ const IIIFPlayer = (props) => {
                 try {
                     setData(response.data);
                     setPlayerInfo(getPlayerInfo(response.data));
-
                 } catch (err) {
+                    console.log(err)
                     setDataError(true);
                 }
             } catch (err) {

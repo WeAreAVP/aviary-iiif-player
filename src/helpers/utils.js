@@ -136,7 +136,6 @@ function is_3d(item) {
     let metadata = item.metadata;
     let is_360 = false;
     metadata.forEach(data => {
-        console.log(data.label?.en[0] == '360 Video')
         if (data.label?.en[0] == '360 Video') return is_360 = true;
     });
     return is_360;
