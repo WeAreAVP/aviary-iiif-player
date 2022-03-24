@@ -7,6 +7,7 @@ import { videoLoader } from "../../helpers/loaders";
 const Video = () => {
 
   const carouselID = useSelector(state => state.selectedItem);
+  console.log(carouselID)
   
   const videoJsOptions = {
       autoplay: true,
