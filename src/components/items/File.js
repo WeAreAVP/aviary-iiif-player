@@ -10,16 +10,7 @@ const File = (props) => {
 
     const videoOne = () => {
         setValue(true)
-        dispatch(
-            setItem({
-                id: props.id,
-                videoCount: props.videoCount,
-                poster: props.thumbnail,
-                format:  props.format,
-                type: props.type,
-                value: value
-            })
-        );
+        dispatch(setItem({...props}));
     };
 
     return (
