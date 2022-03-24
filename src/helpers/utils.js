@@ -76,7 +76,7 @@ export function parseAnnotation(point) {
     let content = "";
     if (isType('array', point.body)) {
         let values = [];
-        let label = point.body[0].label.en[0];
+        let label = point.body[0].label?.en[0];
         point.body.map(({ value }, key) => {
             if (['Keywords', 'Subjects'].includes(label)) {
                 values.push('<span class="inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-gray-700 bg-gray-200 rounded">' + value + '</span>');
@@ -87,7 +87,7 @@ export function parseAnnotation(point) {
             }
         });
         content = values.join(" ");
-        if (!['Title', 'Synopsis'].includes(label)) {
+        if (label && !['Title', 'Synopsis'].includes(label)) {
             content = '<strong>' + label + ': </strong>' + content;
         }
     } else {
