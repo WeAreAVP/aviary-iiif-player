@@ -23,19 +23,19 @@ export const VideoJS = (props) => {
             const player = (playerRef.current = videojs(videoElement, options, () => {
                 console.log("player is ready");
                 onReady && onReady(player);
-                if (carouselID) carouselID.captions.forEach(track => player.addRemoteTextTrack(track));
-                if (carouselID?.is_3d) {
-                    player.mediainfo = player.mediainfo || {};
-                    player.mediainfo.projection = '360';
-                    player.vr({projection: 'AUTO'});
-                }
             }));
             // player.pip();
-        } else {
-            // you can update player here [update player through props]
-            // const player = playerRef.current;
-            // player.autoplay(options.autoplay);
-            // player.src(options.sources);
+        }
+
+        if (playerRef.current) {
+            let player = playerRef.current;
+            if (carouselID) carouselID.captions.forEach(track => player.addRemoteTextTrack(track));
+            if (carouselID?.is_3d) {
+                player.mediainfo = player.mediainfo || {};
+                player.mediainfo.projection = '360';
+                player.vr({ projection: 'AUTO' });
+            }
+            player.currentTime(0);
         }
     }, [options, onReady, videoRef]);
 
