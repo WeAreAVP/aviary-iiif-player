@@ -1,17 +1,23 @@
+import { getManifestCanvases } from './canvas';
 export function getVideos(jsonData) {
+    console.log('rimi test');
+    console.log(getManifestCanvases(jsonData));
     let videos = [];
     for (let i = 0; i < jsonData.items.length; i++) {
         let video = { ...jsonData?.items[i]?.items[0]?.items[0]?.body };
-        let label = jsonData?.items[i]?.label?.en[0];
-        let info = label.split(/ - /)
-        video["thumbnail"] = jsonData?.items[i]?.thumbnail[0]?.id;
-        video["videoCount"] = "item-" + i;
-        video["manifestURL"] = jsonData.id;
-        video["mediaInfo"] = info[0];
-        video["label"] = info.splice(1).join(' - ');
-        video['captions'] = getCaptions(jsonData, i);
-        video['is_3d'] = is_3d(jsonData?.items[i]?.items[0])
-        videos.push(video);
+        if ('id' in video){
+            let label = jsonData?.items[i]?.label?.en[0];
+            let info = label?.split(/ - /)
+            video["thumbnail"] = jsonData?.items[i]?.thumbnail[0]?.id;
+            video["videoCount"] = "item-" + i;
+            video["manifestURL"] = jsonData.id;
+            video["mediaInfo"] = (info.length > 0) ? info[0] : '';
+            video["label"] = info?.splice(1).join(' - ');
+            video['captions'] = getCaptions(jsonData, i);
+            video['is_3d'] = is_3d(jsonData?.items[i]?.items[0])
+            videos.push(video);
+        }
+        
     }
     return videos;
 }
@@ -19,11 +25,12 @@ export function getVideos(jsonData) {
 export function getPlayerInfo(jsonData) {
     let video = getVideos(jsonData)[0];
     video.value = true;
+    let provider = jsonData.provider;
     return {
         label: jsonData.label.en[0],
-        logoInformation: jsonData.provider,
-        logoImage: jsonData.provider[0].logo[0].id,
-        pageLink: jsonData.provider[0].homepage[0].id,
+        logoInformation: provider,
+        logoImage: provider && provider[0].logo[0].id,
+        pageLink: provider && provider[0].homepage[0].id,
         firstVideo: video
     }
 }
