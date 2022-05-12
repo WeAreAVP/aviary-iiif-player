@@ -7,9 +7,9 @@ export function getManifestCanvases(jsonData) {
     .getCanvases()
     .map((canvas, index) => {
         let item = canvas.getContent()[0].getBody()[0].__jsonld;
-        let label = canvas.getLabel()[0]?._value;
+        let label = canvas.getLabel()?.getValue();
         let media_info = '';
-        if (label !== undefined) {
+        if (label) {
             let info = label.split(/ - /);
             if (info.length > 1){
                 media_info = info[0];
@@ -32,7 +32,7 @@ export function getManifestCanvases(jsonData) {
 
 function is_3d(canvas) {
     let is_360 = false;
-    canvas.getContent()[0].getMetadata().map((data) => {
+    canvas.getContent()[0].getMetadata()?.map((data) => {
         if(data.getLabel() == '360 Video') return is_360 = true;
     });
     return is_360;
