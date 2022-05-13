@@ -35,11 +35,11 @@ const RootPlay = ({ link }) => {
     }, [])
 
     useEffect(() => {
-        if(Object.keys(playerInfo).length > 0) {
+        if (Object.keys(playerInfo).length > 0) {
             document.title = `Aviary | ${playerInfo.label}`
             dispatch(setItem(playerInfo.firstVideo));
         }
-        
+
     }, [playerInfo])
 
     if (isFetching) return <div style={{ paddingLeft: '1rem', paddingRight: '1rem', paddingTop: '0.5rem', paddingBottom: '1rem' }} className="px-4 py-2 pb-4">{mainLoader()}</div>;
@@ -52,30 +52,34 @@ const RootPlay = ({ link }) => {
                 <div style={{ width: '100%' }} className="w-full lg:w-full xl:w-2/3">
                     <div style={{ width: '100%', display: 'flex', flexDirection: 'column' }} id="player_desc" className="w-full flex flex-col justify-between h-full">
                         <Player data={data} />
-                        <div className="">
-                            <div style={{ display: 'flex', alignItems: 'center', marginLeft: '0.75rem', marginRight: '0.75rem', paddingBottom: '0.75rem', paddingTop: '0.75rem', paddingLeft: '1.25rem', paddingRight: '1.25rem', borderTopWidth: '1px' }} className='flex items-center space-x-3 py-3 px-5 border-t'>
-                                <p style={{ fontSize: '0.875rem', lineHeight: '1.25rem' }}
+                        {
+                            (playerInfo.logoInformation) ?
+                                <div className="">
+                                    <div style={{ display: 'flex', alignItems: 'center', marginLeft: '0.75rem', marginRight: '0.75rem', paddingBottom: '0.75rem', paddingTop: '0.75rem', paddingLeft: '1.25rem', paddingRight: '1.25rem', borderTopWidth: '1px' }} className='flex items-center space-x-3 py-3 px-5 border-t'>
+                                        <p style={{ fontSize: '0.875rem', lineHeight: '1.25rem' }}
 
-                                    className="text-sm"
-                                >
-                                    About the Provider:
-                                </p>
-                                <div className=''>
-                                    <div style={{ display: 'flex', alignItems: 'center' }} className='flex items-center'>
-                                        <a href={playerInfo.pageLink}>
-                                            <img alt='' style={{ objectFit: 'contain', width: '1.25rem', height: '1.25rem', marginRight: '0.5rem' }} className=' object-contain w-5 h-5 mr-2' src={playerInfo.logoImage} />
-                                        </a>
-                                        <div>
-                                            {playerInfo.logoInformation.map(({ id, label, homepage }) => (
-                                                <div key={"provider-" + label.en}>
-                                                    <p style={{ fontWeight: 'bold', fontSize: '0.875rem', lineHeight: '1.25rem' }} className='font-bold text-sm'>{label.en}</p>
+                                            className="text-sm"
+                                        >
+                                            About the Provider:
+                                        </p>
+                                        <div className=''>
+                                            <div style={{ display: 'flex', alignItems: 'center' }} className='flex items-center'>
+                                                <a href={playerInfo.pageLink}>
+                                                    <img alt='' style={{ objectFit: 'contain', width: '1.25rem', height: '1.25rem', marginRight: '0.5rem' }} className=' object-contain w-5 h-5 mr-2' src={playerInfo.logoImage} />
+                                                </a>
+                                                <div>
+                                                    {playerInfo.logoInformation.map(({ id, label, homepage }) => (
+                                                        <div key={"provider-" + label.en}>
+                                                            <p style={{ fontWeight: 'bold', fontSize: '0.875rem', lineHeight: '1.25rem' }} className='font-bold text-sm'>{label.en}</p>
+                                                        </div>
+                                                    ))}
                                                 </div>
-                                            ))}
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                        </div>
+                                : ""
+                        }
                     </div>
                 </div>
             </div>
