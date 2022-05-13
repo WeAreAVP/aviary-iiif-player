@@ -4,7 +4,7 @@ import { getManifestAnnotations } from './annotation';
 
 export function getVideos(jsonData) {
     // console.log('rimi test');
-    console.log(getManifestAnnotations(jsonData, 0));
+    // console.log(getManifestAnnotations(jsonData, 0));
     // let videos = [];
     // for (let i = 0; i < jsonData.items.length; i++) {
     //     let video = { ...jsonData?.items[i]?.items[0]?.items[0]?.body };
@@ -45,19 +45,19 @@ export function getPlayerInfo(jsonData) {
 }
 
 export function getTranscripts(data, itemNo) {
-    let annotations = [];
-    if (data?.items && data?.items[itemNo]?.annotations) {
-        let items = data?.items[itemNo]?.annotations;
-        for (let i = 0; i < items.length; i++) {
-            if (items[i].items[0].motivation != 'subtitling')
-                annotations.push({
-                    label: items[i].label?.en[0],
-                    transcript: formatIndexes(items[i].items)
-                });
-        }
-    }
+    // let annotations = [];
+    // if (data?.items && data?.items[itemNo]?.annotations) {
+    //     let items = data?.items[itemNo]?.annotations;
+    //     for (let i = 0; i < items.length; i++) {
+    //         if (items[i].items[0].motivation != 'subtitling')
+    //             annotations.push({
+    //                 label: items[i].label?.en[0],
+    //                 transcript: formatIndexes(items[i].items)
+    //             });
+    //     }
+    // }
 
-    return annotations;
+    return getManifestAnnotations(data, itemNo);
 }
 
 export function getMetadata(data) {
