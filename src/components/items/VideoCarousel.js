@@ -22,7 +22,7 @@ const VideoCarousel = (props) => {
   if (isFetching) return videoLoader();
   if (dataError) return <span>Structure is not correct</span>;
   if (videos.length <= 0) return <span>No media item available.</span>;
-
+  
   return (
     <div className="custom-height-playlist">
       {

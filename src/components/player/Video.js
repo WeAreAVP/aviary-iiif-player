@@ -7,7 +7,6 @@ import { videoLoader } from "../../helpers/loaders";
 const Video = () => {
 
   const carouselID = useSelector(state => state.selectedItem);
-  
   const videoJsOptions = {
       autoplay: true,
       fluid: true,

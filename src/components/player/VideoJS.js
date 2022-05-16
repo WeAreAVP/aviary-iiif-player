@@ -50,7 +50,6 @@ export const VideoJS = (props) => {
             }
         };
     }, [playerRef]);
-
     return (
         <div data-vjs-player>
             {(carouselID?.format.includes("audio/") ? (

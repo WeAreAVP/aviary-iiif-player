@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import TranscriptData from "./TranscriptData";
 import { descLoader } from '../../helpers/loaders'
-import { getTranscripts, parseAnnotation } from "../../helpers/utils";
+import { getTranscripts } from "../../helpers/utils";
 import Search from "./menu/search";
 
 const Transcripts = (props) => {
@@ -97,7 +97,7 @@ const Transcripts = (props) => {
     if (isFetching) return descLoader();
     if (dataError) return <span>Annotation structure is not correct</span>;
     if (annotations.length <= 0) return <span>No annotation available for this file.</span>;
-
+    
     return (
         <div>
             <Search setTokens={setSearchWords} tokens={searchWords} annotation={annotation} />

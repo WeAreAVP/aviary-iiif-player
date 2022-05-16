@@ -10,7 +10,7 @@ const Player = (props) => {
 
   useEffect(() => {
     try {
-      setLabel(props.data.label?.en);
+      setLabel(props.label);
       setIsFetching(false);
     } catch (err) {
       setDataError(true)
