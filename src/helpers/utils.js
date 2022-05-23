@@ -1,9 +1,10 @@
 import { getManifestCanvases } from './canvas';
-import { parseManifest } from 'manifesto.js';
+import { parseManifest, Service } from 'manifesto.js';
 import { getManifestAnnotations } from './annotation';
 
 export function getVideos(jsonData) {
-    return getManifestCanvases(jsonData);
+    let canvases = getManifestCanvases(jsonData)
+    return (canvases) ? canvases : [{}];
 }
 
 export function getPlayerInfo(jsonData) {
@@ -55,4 +56,8 @@ function padTo2(value) {
         return "00";
     }
     return value < 10 ? String(value).padStart(2, "0") : value;
+}
+
+export function getAuthService(jsonData) {
+    return parseManifest(jsonData).getServices()[0]?.__jsonld;
 }

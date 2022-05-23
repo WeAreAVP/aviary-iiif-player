@@ -14,10 +14,10 @@ import store from './features/store'
 export const Metadata = ({ manifest }) => {
     return (
         <>
-        <Provider store={store}>
-            <RootDesc link={manifest} />
-        </Provider>
-            
+            <Provider store={store}>
+                <RootDesc link={manifest} />
+            </Provider>
+
 
         </>
     )
@@ -34,7 +34,7 @@ export const Player = ({ manifest }) => {
     )
 }
 
-export const Annotations = ({manifest}) => {
+export const Annotations = ({ manifest }) => {
     return (
         <>
             <Provider store={store}>
@@ -44,7 +44,7 @@ export const Annotations = ({manifest}) => {
     )
 }
 
-export const Items = ({manifest}) => {
+export const Items = ({ manifest }) => {
     return (
         <>
             <Provider store={store}>
@@ -60,7 +60,7 @@ export const AviaryIIIFPlayer = ({manifest}) => {
             <Provider store={store}>
                 <IIIFPlayer manifest={manifest} />
             </Provider>
-        
+
         </>
     )
 }
