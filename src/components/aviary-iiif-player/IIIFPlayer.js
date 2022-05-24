@@ -26,6 +26,7 @@ const IIIFPlayer = (props) => {
             try {
                 const response = await axios.get(props.manifest);
                 try {
+                    setData(response.data);
                     setService(getAuthService(response.data));
                     setPlayerInfo(getPlayerInfo(response.data));
                 } catch (err) {
@@ -81,7 +82,7 @@ const IIIFPlayer = (props) => {
         <div className="min-h-screen w-full">
             {
                 (service && Object.keys(authToken).length === 0 && skipAuth === false) ? <Login service={service} setAuth={setAuthToken} skipAuth={setSkipAuth}/> : 
-                (playerInfo.label) ? <div className="xl:flex md:block bg-white min-h-screen flex-wrap">
+                (playerInfo.firstVideo.id) ? <div className="xl:flex md:block bg-white min-h-screen flex-wrap">
                     <div className="w-full lg:w-full xl:w-2/3">
                         <div id="player_desc" className="w-full flex flex-col justify-between h-full">
                             <Player data={data} label={playerInfo.label} />
