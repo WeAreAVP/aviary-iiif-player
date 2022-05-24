@@ -350,6 +350,7 @@ html {
     margin: auto;
     padding: 30px;
     background: #fff;
+    text-align: center;
     font-family: "Roboto", sans-serif;
 }
 .login-form h2 {
@@ -359,7 +360,7 @@ html {
 }
 .login-form p {
     margin-bottom: 30px;
-    font-size: 14px;
+    font-size: 16px;
 }
 .login-form .login-button {
     width: 100%;
@@ -373,6 +374,11 @@ html {
     padding: 20px;
     color: #444;
     font-size: 16px;
+}
+.login-form .error-message {
+    color: #f00;
+    margin: 0 0 15px;
+    display: block;
 }
 
 @media screen and (max-width: 992px) {
