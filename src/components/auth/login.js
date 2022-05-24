@@ -2,8 +2,6 @@ import React, { useState } from 'react';
 import axios from 'axios';
 
 const Login = ({ service, setAuth, skipAuth }) => {
-
-    // console.log(service);
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [failureMsg, setFailureMsg] = useState("");
@@ -27,9 +25,7 @@ const Login = ({ service, setAuth, skipAuth }) => {
             .catch(function (error) {
                 var msg = service.failureDescription ? service.failureDescription : 'Invalid email or password.'
                 setFailureMsg(msg);
-                console.log("rimi", error);
             });
-        console.log("Asdasdasd")
     }
 
     const handleSkip = (e) => {

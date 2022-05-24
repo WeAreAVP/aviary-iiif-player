@@ -76,8 +76,6 @@ const IIIFPlayer = (props) => {
     if (error) return <span data-testid='loading'>Error loading data</span>;
     if (dataError) return <span data-testid='struct'>Struct is not Correct</span>;
 
-    console.log(playerInfo)
-
     return (
         <div className="min-h-screen w-full">
             {
@@ -119,7 +117,7 @@ const IIIFPlayer = (props) => {
                     <div className="w-full lg:w-full xl:w-1/3 sidebar-holder border-l">
                         <Sidebar data={data} />
                     </div>
-                </div> : (skipAuth === true && !playerInfo.label) ? 'No public media found.' : ''
+                </div> : (skipAuth === true) ? 'No public media found.' : ''
             }
 
         </div>
