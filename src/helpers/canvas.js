@@ -2,7 +2,6 @@ import { parseManifest, AnnotationPage, Annotation } from 'manifesto.js';
 
 export function getManifestCanvases(jsonData) {
     let manifest = parseManifest(jsonData);
-    console.log(jsonData)
     let canvases  = manifest.getSequences()[0]?.getCanvases()?.map((canvas, index) => {
         let item = canvas.getContent()[0].getBody()[0].__jsonld;
         let label = canvas.getLabel()?.getValue();
