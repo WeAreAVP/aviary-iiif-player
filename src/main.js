@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { mainLoader } from './helpers/loaders';
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 import { getAuthService } from './helpers/utils';
 import Login from './components/auth/login';
 
@@ -18,6 +18,7 @@ const Main = (props) => {
     const [service, setService] = useState({});
     const [authToken, setAuthToken] = useState({});
     const [skipAuth, setSkipAuth] = useState(false);
+    const [errorMsg, setErrorMsg] = useState("Error loading data");
 
 
     useEffect(() => {
@@ -54,8 +55,9 @@ const Main = (props) => {
                     console.log(err)
                     setDataError(true);
                 }
-            } catch (err) {
-                setError(true);
+            } catch (error) {
+                if(error.response?.data?.errors) setErrorMsg(error.response.data.errors[0]);
+                setError(true)
             }
             setIsFetching(false);
         }
@@ -66,19 +68,19 @@ const Main = (props) => {
     }, [authToken]);
 
     if (isFetching) return <div className="px-4 py-2 pb-4">{mainLoader()}</div>;
-    if (error) return <span data-testid='loading'>Error loading data</span>;
+    if (error) return <span data-testid='loading'>{ errorMsg }</span>;
     if (dataError) return <span data-testid='struct'>Struct is not Correct</span>;
-    
+
     return (
         <div className="min-h-screen w-full">
             {
-                (service && Object.keys(authToken).length === 0 && skipAuth === false) ? <Login service={service} setAuth={setAuthToken} skipAuth={setSkipAuth}/> : 
-                (Object.keys(data).length > 0) ? 
-                    (props.component == "player") ? <RootPlay data={data} /> :
-                    (props.component == "annotation") ? <RootTrans data={data} /> :
-                    (props.component == "metadata") ? <RootDesc data={data} /> :
-                    (props.component == "items") ? <RootCar data={data} /> : <IIIFPlayer data={data} />
-                : (skipAuth === true) ? 'No public media found.' : ''
+                (service && Object.keys(authToken).length === 0 && skipAuth === false) ? <Login service={service} setAuth={setAuthToken} skipAuth={setSkipAuth} /> :
+                    (Object.keys(data).length > 0) ?
+                        (props.component == "player") ? <RootPlay data={data} /> :
+                            (props.component == "annotation") ? <RootTrans data={data} /> :
+                                (props.component == "metadata") ? <RootDesc data={data} /> :
+                                    (props.component == "items") ? <RootCar data={data} /> : <IIIFPlayer data={data} />
+                        : (skipAuth === true) ? 'No public media found.' : ''
             }
 
         </div>

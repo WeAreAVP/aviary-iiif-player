@@ -9,7 +9,7 @@ export function getVideos(jsonData) {
 
 export function getPlayerInfo(jsonData) {
     let video = getVideos(jsonData)[0];
-    video.value = true;
+    if (video) video.value = true;
     let manifest = parseManifest(jsonData);
     let provider = manifest.getProperty('provider');
     let logoImage,pageLink;

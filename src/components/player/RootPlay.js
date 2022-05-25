@@ -26,7 +26,7 @@ const RootPlay = (props) => {
     }, [props])
 
     useEffect(() => {
-        if (Object.keys(playerInfo).length > 0) {
+        if (Object.keys(playerInfo).length > 0 && playerInfo.firstVideo) {
             document.title = `Aviary | ${playerInfo.label}`
             dispatch(setItem(playerInfo.firstVideo));
         }
