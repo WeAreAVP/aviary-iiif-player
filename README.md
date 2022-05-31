@@ -1,8 +1,10 @@
 # AVIARY IIIF Player Package
 
-This package is used to import aviary media player in your react app.
 
-## How to install
+This package is used to load IIIF manifest files to build a player, metadata and annotation. This is fully supported with Aviary IIIF Manifest files.
+
+How to install
+===
 
 `Package is registered`
 
@@ -29,7 +31,8 @@ now go to your react app in which you want to install package and run
 $ npm link aviary-iiif-player
 ```
 
-## How to use
+How to use
+===
 
 You can import single component with all features(media player, metadata, transcripts, video carousel) and you can use each component separately
 
@@ -47,3 +50,17 @@ import { Player, Description, Carousel, Transcript } from 'aviary-iiif-player';
 <Transcript manifest='path/to/manifest'/>
 <Description manifest='path/to/manifest'/>
 ```
+
+
+License
+===
+See the [LICENSE](LICENSE.md) files for information on the project licenses and the licenses of incorporated third-party software.
+
+
+Contributors
+=== 
+
+ *  Nouman Tayyab nouman@weareavp.com
+ 
+
+  
