@@ -2,12 +2,11 @@ import React, { useEffect, useState } from 'react'
 import { useDispatch } from 'react-redux'
 import Player from './player';
 import { setItem } from '../../features';
-import axios from 'axios'
 import { getPlayerInfo } from '../../helpers/utils';
 import { mainLoader } from '../../helpers/loaders';
 
 
-const RootPlay = ({ link }) => {
+const RootPlay = (props) => {
     const dispatch = useDispatch()
     const [error, setError] = useState(false)
     const [dataError, setDataError] = useState(false)
@@ -16,26 +15,18 @@ const RootPlay = ({ link }) => {
     const [isFetching, setIsFetching] = useState(true);
 
     useEffect(() => {
-        const fetching = async () => {
-            try {
-                const response = await axios.get(link);
-                try {
-                    setData(response.data);
-                    setPlayerInfo(getPlayerInfo(response.data));
-
-                } catch (err) {
-                    setDataError(true);
-                }
-            } catch (err) {
-                setError(true);
-            }
+        try {
+            setData(props.data);
+            setPlayerInfo(getPlayerInfo(props.data));
+            setIsFetching(false);
+        } catch (err) {
+            setDataError(true);
             setIsFetching(false);
         }
-        fetching();
-    }, [])
+    }, [props])
 
     useEffect(() => {
-        if (Object.keys(playerInfo).length > 0) {
+        if (Object.keys(playerInfo).length > 0 && playerInfo.firstVideo) {
             document.title = `Aviary | ${playerInfo.label}`
             dispatch(setItem(playerInfo.firstVideo));
         }
@@ -43,7 +34,6 @@ const RootPlay = ({ link }) => {
     }, [playerInfo])
 
     if (isFetching) return <div style={{ paddingLeft: '1rem', paddingRight: '1rem', paddingTop: '0.5rem', paddingBottom: '1rem' }} className="px-4 py-2 pb-4">{mainLoader()}</div>;
-    if (error) return <span data-testid='loading'>Error loading data</span>;
     if (dataError) return <span data-testid='struct'>Struct is not Correct</span>;
 
     return (
@@ -51,7 +41,7 @@ const RootPlay = ({ link }) => {
             <div style={{ minHeight: '100vh', display: 'flex', background: 'white', flexWrap: 'wrap' }} className="xl:flex md:block bg-white min-h-screen flex-wrap">
                 <div style={{ width: '100%' }} className="w-full lg:w-full xl:w-2/3">
                     <div style={{ width: '100%', display: 'flex', flexDirection: 'column' }} id="player_desc" className="w-full flex flex-col justify-between h-full">
-                        <Player data={data} />
+                        <Player data={data} label={playerInfo.label}/>
                         {
                             (playerInfo.logoInformation) ?
                                 <div className="">

@@ -41,6 +41,7 @@ const Video = () => {
     };
     videoJsOptions.sources[0].type = 'video/vimeo'
   }
+
   return (
     <div className="">
       <div key={carouselID?.id}>

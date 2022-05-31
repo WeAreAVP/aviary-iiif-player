@@ -1,14 +1,15 @@
 import { getManifestCanvases } from './canvas';
-import { parseManifest } from 'manifesto.js';
+import { parseManifest, Service } from 'manifesto.js';
 import { getManifestAnnotations } from './annotation';
 
 export function getVideos(jsonData) {
-    return getManifestCanvases(jsonData);
+    let canvases = getManifestCanvases(jsonData)
+    return (canvases) ? canvases : [{}];
 }
 
 export function getPlayerInfo(jsonData) {
     let video = getVideos(jsonData)[0];
-    video.value = true;
+    if (video) video.value = true;
     let manifest = parseManifest(jsonData);
     let provider = manifest.getProperty('provider');
     let logoImage,pageLink;
@@ -55,4 +56,8 @@ function padTo2(value) {
         return "00";
     }
     return value < 10 ? String(value).padStart(2, "0") : value;
+}
+
+export function getAuthService(jsonData) {
+    return parseManifest(jsonData).getServices()[0]?.__jsonld;
 }
