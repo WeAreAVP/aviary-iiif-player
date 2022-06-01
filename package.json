@@ -1,6 +1,6 @@
 {
   "name": "aviary-iiif-player",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "This package can read the iiif manifest file to build the player, metadata,",
   "main": "./dist/application.js",
   "scripts": {

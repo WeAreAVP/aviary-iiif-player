@@ -1,7 +1,9 @@
 # AVIARY IIIF Player Package
 
 
-This package is used to load IIIF manifest files to build a player, metadata and annotation. This is fully supported with Aviary IIIF Manifest files.
+This package is used to load IIIF manifest files to build a player, metadata, and annotation. This is fully supported with Aviary IIIF Manifest files.
+
+*Copyright (C) 2022 The University of Texas at Austin.*
 
 How to install
 ===
