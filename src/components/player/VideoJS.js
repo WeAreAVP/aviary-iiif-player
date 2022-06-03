@@ -58,7 +58,6 @@ export const VideoJS = (props) => {
                     ref={videoRef}
                     id="aviary-iiif-media-player"
                     className="video-js vjs-big-play-centered w-full"
-                    crossOrigin="anonymous"
                 />
             ) : (
                 <video
@@ -67,7 +66,6 @@ export const VideoJS = (props) => {
                     id="aviary-iiif-media-player"
                     className="video-js vjs-big-play-centered w-full"
                     data-setup='{"techOrder": [ "html5","youtube", "vimeo"]}'
-                    crossOrigin="anonymous"
                 />
             ))}
         </div>
