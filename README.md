@@ -3,6 +3,8 @@
 
 This package is used to load IIIF manifest files to build a player, metadata, and annotation. This is fully supported with Aviary IIIF Manifest files.
 
+This player was developed as part of project, AudiAnnotate Audiovisual Extensible Workflow (AWE), funded by the Mellon Foundation. Read more about this project at https://hipstas.org/awe.
+
 *Copyright (C) 2022 The University of Texas at Austin.*
 
 How to install
