@@ -28,14 +28,14 @@ const Video = () => {
       "fullscreenToggle": false,
       'pictureInPictureToggle': false
     };
-    videoJsOptions.sources[0].type = 'audio/mp4'
+    videoJsOptions.sources[0].type = carouselID.format
     videoJsOptions.inactivityTimeout = 0;
-  } else if(carouselID?.format.includes("youtube")){
+  } else if(carouselID?.format.includes("youtube")) {
     videoJsOptions.controlBar = {
       'pictureInPictureToggle': false
     };
     videoJsOptions.sources[0].type = 'video/youtube';
-  } else if(carouselID?.format.includes("vimeo")){
+  } else if(carouselID?.format.includes("vimeo")) {
     videoJsOptions.controlBar = {
       'pictureInPictureToggle': false
     };

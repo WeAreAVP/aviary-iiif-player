@@ -13,16 +13,18 @@ export function getManifestCanvases(jsonData) {
                 label = info.splice(1).join(' - ');
             } 
         }
-        return {
-          ...item,
-          thumbnail: canvas.getThumbnail()?.id,
-          videoCount: "item-" + index,
-          label: label,
-          mediaInfo: media_info,
-          manifestURL: manifest.id,
-          is_3d: is_3d(canvas),
-          captions: getCaptions(canvas)
-        };
+        let res = {
+            ...item,
+            thumbnail: canvas.getThumbnail()?.id,
+            videoCount: "item-" + index,
+            label: label,
+            mediaInfo: media_info,
+            manifestURL: manifest.id,
+            is_3d: is_3d(canvas),
+            captions: getCaptions(canvas)
+          };
+
+        return res;
       });
       return canvases;
 }
@@ -43,15 +45,17 @@ function getCaptions(canvas) {
         let annotationPage  = new AnnotationPage(annotations[i], {}); 
         if (!annotationPage) { continue; }
         let items = annotationPage.getItems();
-        let annotation = new Annotation(items[0], {});
-        if (annotation.getMotivation() == 'subtitling') {
-            captions.push({
-                label: annotationPage.getLabel()?.getValue(),
-                language: annotation.getBody()[0]?.__jsonld?.language,
-                src: annotation.getTarget(),
-                kind: 'captions'
-            });
-          }
+        if(items) {
+            let annotation = new Annotation(items[0], {});
+            if (annotation.getMotivation() == 'subtitling') {
+                captions.push({
+                    label: annotationPage.getLabel()?.getValue(),
+                    language: annotation.getBody()[0]?.__jsonld?.language,
+                    src: annotation.getTarget(),
+                    kind: 'captions'
+                });
+            }
+        }
     }
     return captions;
 }
