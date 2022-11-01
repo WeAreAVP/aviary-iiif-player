@@ -22,18 +22,41 @@ const Transcripts = (props) => {
         isMouseOver = state;
     };
 
+    // useEffect(async () => {
+    //     // _annotations
+    //     try {
+    //         let itemNo = selectedVideo?.videoCount ? parseInt(selectedVideo?.videoCount.replace('item-', '')) : 0;
+    //         let data = await getTranscripts(props.data, itemNo);
+    //         console.log("data===getTranscripts=>", data[0])
+    //         setAnnotations(data);
+    //         selectAnn(data[0]);
+    //         setIsFetching(false);
+    //     } catch (err) {
+    //         console.log(err)
+    //         setDataError(true)
+    //         setIsFetching(false);
+    //     }
+    // }, [props, selectedVideo]);
+
     useEffect(() => {
-        try {
-            let itemNo = selectedVideo?.videoCount ? parseInt(selectedVideo?.videoCount.replace('item-', '')) : 0;
-            let data = getTranscripts(props.data, itemNo);
-            setAnnotations(data);
-            selectAnn(data[0]);
-            setIsFetching(false);
-        } catch (err) {
-            console.log(err)
-            setDataError(true)
-            setIsFetching(false);
+        const fetching = async () => {
+            try {
+                let itemNo = selectedVideo?.videoCount ? parseInt(selectedVideo?.videoCount.replace('item-', '')) : 0;
+                let data = await getTranscripts(props.data, itemNo).then(res => {
+                    console.log("....then....", res)
+                    console.log("data===getTranscripts=>", res[0])
+                    setAnnotations(res);
+                    selectAnn(res[0]);
+                    setIsFetching(false);
+                });
+                
+            } catch (err) {
+                console.log(err)
+                setDataError(true)
+                setIsFetching(false);
+            }
         }
+        fetching();
     }, [props, selectedVideo]);
 
     const handleSelectTranscript = (e) => {
