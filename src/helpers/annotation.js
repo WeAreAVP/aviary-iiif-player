@@ -10,12 +10,9 @@ export async function getManifestAnnotations(data, itemNo) {
     let annotationPage = null;
     if (canvas) {
         let canvas_annotations = canvas.__jsonld.annotations;
-        console.log("canvas_annotations-->", canvas_annotations)
         if (canvas_annotations) {
             canvas_annotations.forEach(async (annotate) => {
-                console.log("annotate-->", annotate)
                 annotationPage = new AnnotationPage(annotate, {});
-                console.log("annotationPage-->", annotationPage)
                 if(annotationPage.getItems() !== undefined) {
                     let transcript = formatIndexes(annotationPage.getItems());
                     if (transcript.length > 0) {
@@ -26,18 +23,13 @@ export async function getManifestAnnotations(data, itemNo) {
                     }
                 } else {
                     let annot = await fetchJson(annotationPage.__jsonld?.id)
-                    annotations.push(annot)
-                    // let promise = Promise.resolve(fetchJson(annotationPage.__jsonld?.id))
-                    // let annot = promise.then(res => {
-                    //     console.log("fetchJson.....>res--", res)
-                    //     return res
-                    // })
-                    
+                    if (Object.keys(annot).length > 0) {
+                        annotations.push(annot)
+                    }
                 }
             })
         }
     }
-    console.log("get annotations---->", annotations)
     return annotations;
 }
 
@@ -47,7 +39,6 @@ export function parseAnnotation(annotation) {
     const body = annotation.getBody();
     let values = [];
     let label = body[0]?.__jsonld?.label?.en[0];
-    console.log("-----label----", label)
     if (label) {
         for (let i = 0; i < body.length; i++) {
             let value = body[i]?.__jsonld?.value;
@@ -94,11 +85,8 @@ function formatJsonIndexes(transcript) {
     let newTranscript = {};
     transcript.map((point, index) => {
         let annotation = new Annotation(point, {});
-        console.log("annotation in Indexes-->", annotation)
-        console.log("getMotivation-->", annotation.getMotivation())
         if (annotation.getMotivation()?.indexOf('subtitling') == -1) {
             let hash = parseJsonAnnotation(annotation);
-            console.log("=====>", hash);
             (!newTranscript.hasOwnProperty(hash.starttime)) ?
                 newTranscript[hash.starttime] = hash : newTranscript[hash.starttime]['text'] += "<br >" + hash["text"];
         }
@@ -111,7 +99,6 @@ export function parseJsonAnnotation(annotation) {
     const body = annotation.getBody();
     let values = [];
     let label = body[0]?.__jsonld?.label?.en[0];
-    console.log("-----label----", label)
     if (label) {
         for (let i = 0; i < body.length; i++) {
             let value = body[i]?.__jsonld?.value;
@@ -142,17 +129,14 @@ export function parseJsonAnnotation(annotation) {
 }
 
 const fetchJson = async (jsonPath) => {
+    let annotationPage = null;
+    let annotation = {};
     try {
         const response = await axios.get(jsonPath);
-        let annotationPage = null;
-        let annotation = {};
         try {
-            console.log(response)
             annotationPage = new AnnotationPage(response.data, {});
-            console.log("resp annotationPage-->", annotationPage)
             if(annotationPage.getItems() !== undefined) {
                 let transcript = formatJsonIndexes(annotationPage.getItems());
-                console.log("resp transcript-->", transcript)
                 if (transcript.length > 0) {
                     annotation = {
                         label: annotationPage.getLabel()?.getValue(),
@@ -160,12 +144,11 @@ const fetchJson = async (jsonPath) => {
                     }
                 }
             }
-            console.log("resp annotation-->", annotation)
-            return annotation;
         } catch (err) {
-            console.log("res try--->", err)
+            console.log(err)
         }
     } catch (err) {
-        console.log("main try--->", err)
+        console.log(err)
     }
+    return annotation;
 }

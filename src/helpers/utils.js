@@ -29,7 +29,6 @@ export function getPlayerInfo(jsonData) {
 
 export async function getTranscripts(data, itemNo) {
     let annotations = await getManifestAnnotations(data, itemNo);
-    console.log("utilssss->", annotations);
     return annotations;
 }
 
