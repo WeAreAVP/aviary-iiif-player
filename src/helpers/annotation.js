@@ -12,12 +12,14 @@ export function getManifestAnnotations(data, itemNo) {
         if (canvas_annotations) {
             canvas_annotations.forEach(annotate => {
                 annotationPage = new AnnotationPage(annotate, {});
-                let transcript = formatIndexes(annotationPage.getItems());
-                if (transcript.length > 0){
-                    annotations.push({
-                        label: annotationPage.getLabel()?.getValue(),
-                        transcript: transcript
-                    });
+                if(annotationPage.getItems() !== undefined) {
+                    let transcript = formatIndexes(annotationPage.getItems());
+                    if (transcript.length > 0){
+                        annotations.push({
+                            label: annotationPage.getLabel()?.getValue(),
+                            transcript: transcript
+                        });
+                    }
                 }
             })
         }

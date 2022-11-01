@@ -13,17 +13,18 @@ export function getPlayerInfo(jsonData) {
     let manifest = parseManifest(jsonData);
     let provider = manifest.getProperty('provider');
     let logoImage,pageLink;
-    if (provider) {
+    if (jsonData.homepage === undefined && provider) {
         logoImage = provider[0]?.logo[0]?.id;
         pageLink = provider[0]?.homepage[0]?.id;
     }
-    return {
+    let playerRes = {
         label: manifest.getLabel()?.getValue(),
         logoInformation: provider,
         logoImage: logoImage,
         pageLink: pageLink,
         firstVideo: video
     }
+    return playerRes
 }
 
 export function getTranscripts(data, itemNo) {
@@ -31,6 +32,21 @@ export function getTranscripts(data, itemNo) {
 }
 
 export function getMetadata(data) {
+    if (data?.homepage != undefined) {
+        data.metadata = []
+        let metadata = [];
+        data.homepage.map((m, i) => {
+            let homepageMetadata = {"label": {"en": ["Source URI"]}, "value": {"en": [ m?.label.en]}}
+            metadata.push(homepageMetadata)
+        })
+        if (data.provider !== undefined) {
+            data.provider.map((p, i) => {
+                let provider = {"label": {"en": ["Provider"]}, "value": {"en": [ p?.label.en]}}
+                metadata.push(provider)
+            })
+        }
+        data.metadata = metadata
+    }
     return data.metadata;
 }
 
