@@ -23,17 +23,29 @@ const Transcripts = (props) => {
     };
 
     useEffect(() => {
-        try {
-            let itemNo = selectedVideo?.videoCount ? parseInt(selectedVideo?.videoCount.replace('item-', '')) : 0;
-            let data = getTranscripts(props.data, itemNo);
-            setAnnotations(data);
-            selectAnn(data[0]);
-            setIsFetching(false);
-        } catch (err) {
-            console.log(err)
-            setDataError(true)
-            setIsFetching(false);
-        }
+        const promiseThen = new Promise((resolve, reject) => {
+            try {
+                let itemNo = selectedVideo?.videoCount ? parseInt(selectedVideo?.videoCount.replace('item-', '')) : 0;
+                let data = getTranscripts(props.data, itemNo);
+                setTimeout(() => {
+                    resolve(data);
+                }, 2000);
+            } catch (err) {
+                console.log(err)
+            }
+        });
+        promiseThen
+            .then((val) => {
+                setAnnotations(val);
+                selectAnn(val[0]);
+                setIsFetching(false);
+            })
+            .catch((err) => {
+                console.log(err)
+                setDataError(true)
+                setIsFetching(false);
+            });
+
     }, [props, selectedVideo]);
 
     const handleSelectTranscript = (e) => {
@@ -107,7 +119,7 @@ const Transcripts = (props) => {
                     <label htmlFor="autoscrollchange">Auto Scroll with Media</label>
                 </div>
                 <div className="custom-select">
-                    <label for="annotation">Annotation Sets</label>
+                    <label htmlFor="annotation">Annotation Sets</label>
                     <select className="px-4 pt-4 pb-3 border w-full rounded-md" value={transcript} onChange={handleSelectTranscript}>
                         {annotations.map((e, key) => {
                             return <option key={key} value={key + 1}>{e.label}</option>;
