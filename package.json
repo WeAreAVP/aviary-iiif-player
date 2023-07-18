@@ -73,7 +73,6 @@
     "redux-devtools-extension": "^2.13.8",
     "redux-thunk": "^2.3.0",
     "regenerator-runtime": "^0.13.9",
-    "semver": "^7.5.2",
     "video.js": "^7.17.0",
     "videojs-vr": "^2.0.0",
     "videojs-youtube": "^2.6.1"
@@ -85,5 +84,11 @@
   "repository": {
     "type": "git",
     "url": "git@github.com:WeAreAVP/aviary-iiif-player.git"
+  },
+  "overrides": {
+    "semver": "^7.5.3"
+  },
+  "resolutions": {
+    "semver": "^7.5.3"
   }
 }
