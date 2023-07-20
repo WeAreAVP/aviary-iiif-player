@@ -84,5 +84,11 @@
   "repository": {
     "type": "git",
     "url": "git@github.com:WeAreAVP/aviary-iiif-player.git"
+  },
+  "overrides": {
+    "semver": "^7.5.3"
+  },
+  "resolutions": {
+    "semver": "^7.5.3"
   }
 }
