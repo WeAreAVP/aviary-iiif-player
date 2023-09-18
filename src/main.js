@@ -56,7 +56,7 @@ const Main = (props) => {
                     setDataError(true);
                 }
             } catch (error) {
-                if(error.response?.data?.errors) setErrorMsg(error.response.data.errors[0]);
+                if (error.response?.data?.errors) setErrorMsg(error.response.data.errors[0]);
                 setError(true)
             }
             setIsFetching(false);
@@ -68,7 +68,7 @@ const Main = (props) => {
     }, [authToken]);
 
     if (isFetching) return <div className="px-4 py-2 pb-4">{mainLoader()}</div>;
-    if (error) return <span data-testid='loading'>{ errorMsg }</span>;
+    if (error) return <span data-testid='loading'>{errorMsg}</span>;
     if (dataError) return <span data-testid='struct'>Struct is not Correct</span>;
 
     return (

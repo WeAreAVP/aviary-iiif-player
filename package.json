@@ -73,9 +73,10 @@
     "redux-devtools-extension": "^2.13.8",
     "redux-thunk": "^2.3.0",
     "regenerator-runtime": "^0.13.9",
-    "video.js": "^7.17.0",
-    "videojs-vr": "^2.0.0",
-    "videojs-youtube": "^2.6.1"
+    "video.js": "^7.21.5",
+    "videojs-vr": "^1.7.2",
+    "videojs-youtube": "^2.6.1",
+    "@streamroot/videojs-hlsjs-plugin": "^1.0.16"
   },
   "peerDependencies": {
     "react": "^17.0.2",

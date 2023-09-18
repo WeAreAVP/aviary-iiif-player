@@ -5,7 +5,7 @@ export const SET_ITEM = 'SET_ITEM';
 export const setItem = (item) => {
 	return {
 		type: SET_ITEM,
-        item
+		item
 	}
 }
 
@@ -13,7 +13,7 @@ export const setItem = (item) => {
 const selectedVideo = [];
 
 const itemReducer = (state = selectedVideo, action) => {
-	switch(action.type){
+	switch (action.type) {
 		case SET_ITEM: return action.item
 		default: return state
 	}

@@ -37,7 +37,7 @@ const IIIFPlayer = (props) => {
 
     if (isFetching) return <div style={{ paddingLeft: '1rem', paddingRight: '1rem', paddingTop: '0.5rem', paddingBottom: '1rem' }} className="px-4 py-2 pb-4">{mainLoader()}</div>;
     if (dataError) return <span data-testid='struct'>Struct is not Correct</span>;
-    
+
     return (
         <div className="min-h-screen w-full">
             {

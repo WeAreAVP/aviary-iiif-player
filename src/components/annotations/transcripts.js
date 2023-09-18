@@ -109,7 +109,7 @@ const Transcripts = (props) => {
     if (isFetching) return descLoader();
     if (dataError) return <span>Annotation structure is not correct</span>;
     if (annotations.length <= 0) return <span>No annotation available for this file.</span>;
-    
+
     return (
         <div>
             <Search setTokens={setSearchWords} tokens={searchWords} annotation={annotation} />
