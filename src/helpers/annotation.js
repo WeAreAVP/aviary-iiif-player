@@ -13,7 +13,7 @@ export async function getManifestAnnotations(data, itemNo) {
         if (canvas_annotations) {
             canvas_annotations.forEach(async (annotate) => {
                 annotationPage = new AnnotationPage(annotate, {});
-                if(annotationPage.getItems() !== undefined) {
+                if (annotationPage.getItems() !== undefined) {
                     let transcript = formatIndexes(annotationPage.getItems());
                     if (transcript.length > 0) {
                         annotations.push({
@@ -135,7 +135,7 @@ const fetchJson = async (jsonPath) => {
         const response = await axios.get(jsonPath);
         try {
             annotationPage = new AnnotationPage(response.data, {});
-            if(annotationPage.getItems() !== undefined) {
+            if (annotationPage.getItems() !== undefined) {
                 let transcript = formatJsonIndexes(annotationPage.getItems());
                 if (transcript.length > 0) {
                     annotation = {

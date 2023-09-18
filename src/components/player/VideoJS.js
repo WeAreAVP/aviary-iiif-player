@@ -11,7 +11,7 @@ hlsSourceHandler.register(videojs)
 
 
 export const VideoJS = (props) => {
-    
+
     const videoRef = useRef(null);
     const carouselID = useSelector(state => state.selectedItem);
     const playerRef = useRef(null);
@@ -38,7 +38,7 @@ export const VideoJS = (props) => {
                 player.mediainfo.projection = '360';
                 player.vr({ projection: 'AUTO' });
             }
-            
+
             player.currentTime(0);
         }
     }, [options, onReady, videoRef]);
@@ -56,9 +56,6 @@ export const VideoJS = (props) => {
     }, [playerRef]);
     return (
         <div data-vjs-player>
-            {
-
-            }
             {(carouselID?.format.includes("audio/") ? (
                 <audio
                     poster={carouselID?.thumbnail}
