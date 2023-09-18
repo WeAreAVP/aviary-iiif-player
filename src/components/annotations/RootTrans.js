@@ -19,7 +19,7 @@ const RootTrans = (props) => {
 
     if (isFetching) return descLoader();
     if (dataError) return <span data-testid='struct'>Struct is not Correct</span>;
-    
+
     return (
         <Transcripts data={data} />
 

@@ -25,7 +25,7 @@ const Sidebar = (props) => {
     setOpenTranscript(false)
     setOpenPlaylist(true);
   }
-  
+
   return (
     <div className="h-full px-5">
       <div className="flex tabs-list space-x-5 py-3 px-5 mb-5 border-b">

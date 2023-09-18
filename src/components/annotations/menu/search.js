@@ -17,13 +17,13 @@ const Search = ({ tokens, setTokens, annotation }) => {
     const handleSubmit = (e) => {
         e.preventDefault();
         if (query == "" || query == null) return;
-        if (typeof tokens.find(ele => { return ele.toLowerCase() === query.toLowerCase(); }) != "undefined") return; 
-        let newTokens = [...tokens, query];  
+        if (typeof tokens.find(ele => { return ele.toLowerCase() === query.toLowerCase(); }) != "undefined") return;
+        let newTokens = [...tokens, query];
         updateAnnotation([query], false);
         setTokens([...newTokens]);
         setQuery("");
         setShowResults(true);
-        
+
     }
 
     const handleDelete = (e) => {
@@ -166,16 +166,16 @@ const Search = ({ tokens, setTokens, annotation }) => {
                                     let hit = hits.hasOwnProperty(q.toLowerCase()) ? hits[q.toLowerCase()] : { total: 0, active: 0 }
                                     return <li key={index}>
                                         <div>
-                                        <div className="search-button-holder">
-                                            <span className="total-hit">{hit.active}/{hit.total}</span> {q}
-                                            <div className="ml-4 inline-block">
-                                                <button className="prev-btn" onClick={prevIndex} index={q.toLowerCase()}>{' < '}</button> 
-                                                <button className="next-btn" onClick={nextIndex} index={q.toLowerCase()}>{' > '}</button>
+                                            <div className="search-button-holder">
+                                                <span className="total-hit">{hit.active}/{hit.total}</span> {q}
+                                                <div className="ml-4 inline-block">
+                                                    <button className="prev-btn" onClick={prevIndex} index={q.toLowerCase()}>{' < '}</button>
+                                                    <button className="next-btn" onClick={nextIndex} index={q.toLowerCase()}>{' > '}</button>
+                                                </div>
                                             </div>
                                         </div>
-                                        </div> 
                                         <button onClick={handleDelete} index={index} className="remove-btn">+</button>
-                                        </li>;
+                                    </li>;
                                 })
                             }
                         </>

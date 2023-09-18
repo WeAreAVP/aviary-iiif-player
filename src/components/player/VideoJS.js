@@ -6,9 +6,12 @@ import '@devmobiliza/videojs-vimeo/dist/videojs-vimeo.esm';
 import 'videojs-vr';
 // require('!style-loader!css-loader!video.js/dist/video-js.css');
 require('!style-loader!css-loader!videojs-vr/dist/videojs-vr.css');
+import hlsSourceHandler from "@streamroot/videojs-hlsjs-plugin";
+hlsSourceHandler.register(videojs)
 
 
 export const VideoJS = (props) => {
+
     const videoRef = useRef(null);
     const carouselID = useSelector(state => state.selectedItem);
     const playerRef = useRef(null);
@@ -35,6 +38,7 @@ export const VideoJS = (props) => {
                 player.mediainfo.projection = '360';
                 player.vr({ projection: 'AUTO' });
             }
+
             player.currentTime(0);
         }
     }, [options, onReady, videoRef]);
@@ -65,7 +69,7 @@ export const VideoJS = (props) => {
                     ref={videoRef}
                     id="aviary-iiif-media-player"
                     className="video-js vjs-big-play-centered w-full"
-                    data-setup='{"techOrder": [ "html5","youtube", "vimeo"]}'
+                    data-setup='{"techOrder": ["html5","youtube", "vimeo"]}'
                 />
             ))}
         </div>
