@@ -3,7 +3,6 @@ import { useSelector } from "react-redux";
 import VideoJS from './VideoJS'
 import { videoLoader } from "../../helpers/loaders";
 
-
 const Video = () => {
 
   const carouselID = useSelector(state => state.selectedItem);
@@ -40,8 +39,10 @@ const Video = () => {
       'pictureInPictureToggle': false
     };
     videoJsOptions.sources[0].type = 'video/vimeo'
+  } else if(carouselID?.format.includes("application")) {
+    videoJsOptions.sources[0].type = carouselID?.format
   }
-
+  
   return (
     <div className="">
       <div key={carouselID?.id}>
