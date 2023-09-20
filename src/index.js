@@ -49,8 +49,8 @@ export const Items = ({ manifest }) => {
     )
 }
 
-export const AviaryIIIFPlayer = ({manifest}) => {
-    return(
+export const AviaryIIIFPlayer = ({ manifest }) => {
+    return (
         <>
             <Provider store={store}>
                 <Main manifest={manifest} component="all" />
