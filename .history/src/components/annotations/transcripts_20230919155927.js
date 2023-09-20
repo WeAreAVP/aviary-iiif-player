@@ -54,7 +54,7 @@ const Transcripts = (props) => {
         let names = [];
         let transcripts = []
         for (let key in ids) {
-            let colorCode = transcriptColor(key);
+            let colorCode = transcriptColor();
             let item = ann[parseInt(ids[key]) - 1]
             item.transcript.map( (transcript,i) => { item.transcript[i].text = `${item.transcript[i].text}<div class="text-right"><span class="inline-flex items-center justify-center px-2 py-1 text-xs font-bold text-gray-700 bg-gray-200 rounded" style="background-color:${colorCode}">${item.label}</span></div>` } )
             console.log('item',item)
@@ -68,8 +68,8 @@ const Transcripts = (props) => {
 
     }
 
-    const transcriptColor = (id) => {
-        let val = parseInt(id)%5;
+    const transcriptColor = () => {
+        let val = Math.floor(Math.random() * (4 - 0)) + 0;
         return tagsColors[val];
     }
 

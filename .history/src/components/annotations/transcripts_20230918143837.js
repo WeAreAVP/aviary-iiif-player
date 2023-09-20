@@ -13,11 +13,11 @@ const Transcripts = (props) => {
     const [isFetching, setIsFetching] = useState(true);
     const transcriptContainerRef = React.useRef(null);
     const [searchWords, setSearchWords] = useState([]);
+    // const [annotation, selectAnn] = useState(null)
+    const [transcriptPoints, selectTranscriptPoints] = useState([])
     let isMouseOver = false;
     const isMouseOverRef = React.useRef(isMouseOver);
-    const [transcriptNames, selectTranscriptNames] = useState([])
-    const [transcriptPoints, selectTranscriptPoints] = useState([])
-    const [tagsColors] = useState(['#A2849A','#C6A5AC','#DC9A83','#E1BE90','#CED1AB'])
+
     const setIsMouseOver = (state) => {
         isMouseOverRef.current = state;
         isMouseOver = state;
@@ -38,7 +38,8 @@ const Transcripts = (props) => {
         promiseThen
             .then((val) => {
                 setAnnotations(val);
-                processTranscripts(['1'],val)
+                processTranscripts([1],val)
+                selectAnn(val[0]);
                 setIsFetching(false);
             })
             .catch((err) => {
@@ -48,30 +49,6 @@ const Transcripts = (props) => {
             });
 
     }, [props, selectedVideo]);
-
-    const processTranscripts = (ids,val) => {
-        let ann = JSON.parse(JSON.stringify(val));
-        let names = [];
-        let transcripts = []
-        for (let key in ids) {
-            let colorCode = transcriptColor(key);
-            let item = ann[parseInt(ids[key]) - 1]
-            item.transcript.map( (transcript,i) => { item.transcript[i].text = `${item.transcript[i].text}<div class="text-right"><span class="inline-flex items-center justify-center px-2 py-1 text-xs font-bold text-gray-700 bg-gray-200 rounded" style="background-color:${colorCode}">${item.label}</span></div>` } )
-            console.log('item',item)
-            transcripts = transcripts.concat(item.transcript)
-            names.push([colorCode,item.label])
-        }
-        let arrObj = transcripts.sort((a, b) => (parseFloat(a.starttime) > parseFloat(b.starttime)) ? 1 : -1)
-        selectTranscriptNames(names)
-        selectTranscriptPoints(arrObj)
-        console.log('processTranscripts',transcripts,arrObj)
-
-    }
-
-    const transcriptColor = (id) => {
-        let val = parseInt(id)%5;
-        return tagsColors[val];
-    }
 
     const handleSelectTranscript = (e) => {
         let ids = transcript
@@ -84,7 +61,22 @@ const Transcripts = (props) => {
             ids.push(e.target.value);
         }
         selectTranscript(ids);   
-        processTranscripts(ids,annotations);
+        processTranscripts(ids);     
+        // selectAnn(annotations[parseInt(e.target.value) - 1])
+    }
+
+    const processTranscripts = (ids,val = []) => {
+        let ann = annotations;
+        if(val.length > 0) ann = val;
+        let transcripts = []
+        for (let key in ids) {
+            let item = ann[parseInt(ids[key]) - 1]
+            transcripts = transcripts.concat(item.transcript)
+        }
+        let arrObj = transcripts.sort((a, b) => (parseFloat(a.starttime) > parseFloat(b.starttime)) ? 1 : -1)
+        selectTranscriptPoints(arrObj)
+        console.log('processTranscripts',transcripts,arrObj)
+
     }
 
     const handleAutoScroll = (e) => {
@@ -146,7 +138,7 @@ const Transcripts = (props) => {
     
     return (
         <div>
-            <Search setTokens={setSearchWords} tokens={searchWords} />
+            <Search setTokens={setSearchWords} tokens={searchWords} annotation={annotation} />
             <div className="" onMouseOver={() => handleMouseOver(true)} onMouseLeave={() => handleMouseOver(false)}>
                 <div className="auto-scroll-holder">
                     <input type="checkbox" value="1" id="autoscrollchange" onChange={handleAutoScroll} />
@@ -159,13 +151,6 @@ const Transcripts = (props) => {
                             return <option key={key} value={key + 1}>{e.label}</option>;
                         })}
                     </select>
-                    <div>
-                        {transcriptNames.map((point) => {
-                            return <span class="inline-flex items-center justify-center px-2 py-1 text-xs font-bold text-gray-700 bg-gray-200 rounded" style={{backgroundColor: point[0]}}>{point[1]}</span>
-                        }
-                        )}
-                        
-                    </div>
                 </div>
                 <div className="custom-height scroll overflow-x-hidden overflow-y-auto mt-2 bg-white rounded-sm p-2" id="transcript_data" ref={transcriptContainerRef}>
                     <>

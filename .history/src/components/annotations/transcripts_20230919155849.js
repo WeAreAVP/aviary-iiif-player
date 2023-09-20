@@ -54,12 +54,12 @@ const Transcripts = (props) => {
         let names = [];
         let transcripts = []
         for (let key in ids) {
-            let colorCode = transcriptColor(key);
+            let colorCode = transcriptColor();
             let item = ann[parseInt(ids[key]) - 1]
             item.transcript.map( (transcript,i) => { item.transcript[i].text = `${item.transcript[i].text}<div class="text-right"><span class="inline-flex items-center justify-center px-2 py-1 text-xs font-bold text-gray-700 bg-gray-200 rounded" style="background-color:${colorCode}">${item.label}</span></div>` } )
             console.log('item',item)
             transcripts = transcripts.concat(item.transcript)
-            names.push([colorCode,item.label])
+            names.push([,item.label])
         }
         let arrObj = transcripts.sort((a, b) => (parseFloat(a.starttime) > parseFloat(b.starttime)) ? 1 : -1)
         selectTranscriptNames(names)
@@ -68,8 +68,8 @@ const Transcripts = (props) => {
 
     }
 
-    const transcriptColor = (id) => {
-        let val = parseInt(id)%5;
+    const transcriptColor = () => {
+        let val = Math.floor(Math.random() * (4 - 0)) + 0;
         return tagsColors[val];
     }
 
@@ -161,7 +161,7 @@ const Transcripts = (props) => {
                     </select>
                     <div>
                         {transcriptNames.map((point) => {
-                            return <span class="inline-flex items-center justify-center px-2 py-1 text-xs font-bold text-gray-700 bg-gray-200 rounded" style={{backgroundColor: point[0]}}>{point[1]}</span>
+                            return <span class="inline-flex items-center justify-center px-2 py-1 text-xs font-bold text-gray-700 bg-gray-200 rounded" style={{backgroundColor: transcriptColor()}}>{point}</span>
                         }
                         )}
                         
