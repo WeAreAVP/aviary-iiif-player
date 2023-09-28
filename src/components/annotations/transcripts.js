@@ -47,7 +47,11 @@ const Transcripts = (props) => {
         promiseThen
             .then((val) => {
                 setAnnotations(val);
-                processTranscripts(['1'],val)
+                let arr = []
+                for (let key in val) {
+                    arr.push(parseInt(key)+1)
+                }
+                processTranscripts(arr,val)
                 setIsFetching(false);
             })
             .catch((err) => {
@@ -157,7 +161,9 @@ const Transcripts = (props) => {
                     <label htmlFor="annotation">Annotation Sets</label>
                     <Select
                     className="select_annotations"
-        defaultValue={annotations ? { value: 1, label: annotations[0].label }: {}}
+        defaultValue={annotations ? annotations.map((e, key) => {
+            return { value: key + 1, label: e.label};
+        }): {}}
         onChange={handleSelectTranscript}
         options={annotations.map((e, key) => {
             return { value: key + 1, label: e.label};
