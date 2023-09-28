@@ -4,26 +4,57 @@ import VideoCarousel from "../items/VideoCarousel";
 import { getVideos } from "../../helpers/utils";
 import Metadata from "../metadata/metadata";
 import Transcripts from "../annotations/transcripts";
+import queryString from 'query-string';
 
 
 const Sidebar = (props) => {
   const [opentranscript, setOpenTranscript] = useState(false)
   const [openPlaylist, setOpenPlaylist] = useState(false)
+  const parsed = queryString.parse(location.search);
 
-  const open = () => {
+  useEffect(() => {
+    try {
+      if (parsed.tab === 'Annotations') {
+        open(0);
+      }
+      else if(parsed.tab === 'Items')
+      {
+        openPlaylistTab(0);
+      }
+      else
+      {
+        openMeta(0);
+      }
+    } catch (err) {
+       
+    }
+  }, []);
+
+  const setTag = (tab) => {
+    parsed.tab = tab;
+    let searchParams = new URLSearchParams(window.location.search);
+    searchParams.set('manifest', parsed.manifest);
+    searchParams.set('tab', tab);
+    let newurl = window.location.protocol + "//" + window.location.host + window.location.pathname + '?' + searchParams.toString();
+    window.history.pushState({path: newurl}, '', newurl);
+  }
+  
+  const open = (e) => {
     setOpenTranscript(true);
     setOpenPlaylist(false);
-
+    if(e !== 0) setTag("Annotations")
   }
 
-  const openMeta = () => {
+  const openMeta = (e) => {
     setOpenTranscript(false);
     setOpenPlaylist(false);
+    if(e !== 0) setTag("Metadata")
   }
 
-  const openPlaylistTab = () => {
+  const openPlaylistTab = (e) => {
     setOpenTranscript(false)
     setOpenPlaylist(true);
+    if(e !== 0)setTag("Items")
   }
 
   return (

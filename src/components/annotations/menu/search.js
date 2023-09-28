@@ -124,7 +124,7 @@ const Search = ({ tokens, setTokens, annotation }) => {
     }
 
     const updateAnnotation = (queries, deleteMarks = true) => {
-        annotation.transcript.map((point) => {
+        annotation.map((point) => {
             let ele = document.createElement('div');
             ele.innerHTML = point.text;
             if (deleteMarks) ele.innerHTML = ele.innerHTML.replace(/<\/?mark[^>]*>/g, "");

@@ -4,19 +4,29 @@ import TranscriptData from "./TranscriptData";
 import { descLoader } from '../../helpers/loaders'
 import { getTranscripts } from "../../helpers/utils";
 import Search from "./menu/search";
+import Select from 'react-select';
 
 const Transcripts = (props) => {
+    const selectStyles = {
+        control: (base) => ({
+          ...base,
+          padding: '6px 5px',
+          height: '45px',
+          overflow: 'auto',
+      }),
+     
+    }
     const selectedVideo = useSelector(state => state.selectedItem);
     const [dataError, setDataError] = useState(false)
-    const [transcript, selectTranscript] = useState('1');
     const [annotations, setAnnotations] = useState([]);
     const [isFetching, setIsFetching] = useState(true);
     const transcriptContainerRef = React.useRef(null);
     const [searchWords, setSearchWords] = useState([]);
-    const [annotation, selectAnn] = useState(null)
     let isMouseOver = false;
     const isMouseOverRef = React.useRef(isMouseOver);
-
+    const [transcriptNames, selectTranscriptNames] = useState([])
+    const [transcriptPoints, selectTranscriptPoints] = useState([])
+    const [tagsColors] = useState(['#A2849A','#C6A5AC','#DC9A83','#E1BE90','#CED1AB'])
     const setIsMouseOver = (state) => {
         isMouseOverRef.current = state;
         isMouseOver = state;
@@ -37,7 +47,7 @@ const Transcripts = (props) => {
         promiseThen
             .then((val) => {
                 setAnnotations(val);
-                selectAnn(val[0]);
+                processTranscripts(['1'],val)
                 setIsFetching(false);
             })
             .catch((err) => {
@@ -48,9 +58,34 @@ const Transcripts = (props) => {
 
     }, [props, selectedVideo]);
 
+    const processTranscripts = (ids,val) => {
+        let ann = JSON.parse(JSON.stringify(val));
+        let names = [];
+        let transcripts = []
+        for (let key in ids) {
+            let colorCode = transcriptColor(key);
+            let item = ann[parseInt(ids[key]) - 1]
+            if(item && item.transcript){
+                item.transcript.map( (transcript,i) => { item.transcript[i].text = `${item.transcript[i].text}<div class="text-right"><span class="inline-flex items-center justify-center px-2 py-1 text-xs font-bold text-gray-700 bg-gray-200 rounded" style="background-color:${colorCode}">${item.label}</span></div>` } )
+                transcripts = transcripts.concat(item.transcript)
+                names.push([colorCode,item.label])
+            }
+        }
+        let arrObj = transcripts.sort((a, b) => (parseFloat(a.starttime) > parseFloat(b.starttime)) ? 1 : -1)
+        selectTranscriptNames(names)
+        selectTranscriptPoints(arrObj)
+    }
+
+    const transcriptColor = (id) => {
+        let val = parseInt(id)%5;
+        return tagsColors[val];
+    }
+
     const handleSelectTranscript = (e) => {
-        selectTranscript(e.target.value);
-        selectAnn(annotations[parseInt(e.target.value) - 1])
+        let ids = e.map((i, key) => {
+            return  i.value;
+        })
+        processTranscripts(ids,annotations);
     }
 
     const handleAutoScroll = (e) => {
@@ -109,26 +144,40 @@ const Transcripts = (props) => {
     if (isFetching) return descLoader();
     if (dataError) return <span>Annotation structure is not correct</span>;
     if (annotations.length <= 0) return <span>No annotation available for this file.</span>;
-
+    
     return (
         <div>
-            <Search setTokens={setSearchWords} tokens={searchWords} annotation={annotation} />
+            <Search setTokens={setSearchWords} tokens={searchWords} annotation={transcriptPoints}/>
             <div className="" onMouseOver={() => handleMouseOver(true)} onMouseLeave={() => handleMouseOver(false)}>
                 <div className="auto-scroll-holder">
                     <input type="checkbox" value="1" id="autoscrollchange" onChange={handleAutoScroll} />
                     <label htmlFor="autoscrollchange">Auto Scroll with Media</label>
                 </div>
-                <div className="custom-select">
+                <div className="custom-select select-react">
                     <label htmlFor="annotation">Annotation Sets</label>
-                    <select className="px-4 pt-4 pb-3 border w-full rounded-md" value={transcript} onChange={handleSelectTranscript}>
-                        {annotations.map((e, key) => {
-                            return <option key={key} value={key + 1}>{e.label}</option>;
-                        })}
-                    </select>
+                    <Select
+                    className="select_annotations"
+        defaultValue={annotations ? { value: 1, label: annotations[0].label }: {}}
+        onChange={handleSelectTranscript}
+        options={annotations.map((e, key) => {
+            return { value: key + 1, label: e.label};
+        })}
+        isMulti={true}
+        hideSelectedOptions={false}
+        styles={selectStyles}
+      />
+                  
+                    <div>
+                        {transcriptNames.map((point) => {
+                            return <span className="inline-flex items-center justify-center px-2 py-1 text-xs font-bold text-gray-700 bg-gray-200 rounded ml-1" style={{backgroundColor: point[0]}}>{point[1]}</span>
+                        }
+                        )}
+                        
+                    </div>
                 </div>
                 <div className="custom-height scroll overflow-x-hidden overflow-y-auto mt-2 bg-white rounded-sm p-2" id="transcript_data" ref={transcriptContainerRef}>
                     <>
-                        {annotation.transcript.map((point, index) => {
+                        {transcriptPoints.map((point, index) => {
                             return <TranscriptData point={point} index={index} autoScrollAndHighlight={autoScrollAndHighlight} key={index} searchWords={searchWords} />
                         }
                         )}

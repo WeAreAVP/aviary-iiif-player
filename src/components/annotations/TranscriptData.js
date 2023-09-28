@@ -51,20 +51,37 @@ const TranscriptData = (props) => {
     });
     e.currentTarget.classList.add('active');
   };
+  const handleTranscriptTextEndTimeClick = (e) => {
+    e.preventDefault();
+    if (player) {
+      player.currentTime(e.currentTarget.getAttribute('endtime'));
+    }
+
+    textRefs.current.map((tr) => {
+      if (tr && tr.classList.contains('active')) {
+        tr.classList.remove('active');
+      }
+    });
+    e.currentTarget.classList.add('active');
+  };
 
   return (
     <>
       <div
         style={{ marginTop: '1.25rem', padding: '0.5rem' }}
         className="flex space-x-4 p-2 hover:bg-gray-50 transcript_item"
-        onClick={handleTranscriptTextClick}
-        starttime={props.point.starttime}
-        endtime={props.point.endtime}
         ref={(el) => (textRefs.current[props.index] = el)}
       >
-        <span style={{ cursor: 'pointer', fontWeight: '600' }} className="cursor-pointer hover:underline hover:text-blue-800 w-1/4 transcript_time">
-          {moment.utc(props.point.starttime * 1000).format('HH:mm:ss')}
-        </span>
+        <div>
+          <div onClick={handleTranscriptTextClick}
+          starttime={props.point.starttime} style={{ cursor: 'pointer', fontWeight: '600' }} className="cursor-pointer hover:underline hover:text-blue-800 w-1/4 transcript_time">
+            {moment.utc(props.point.starttime * 1000).format('HH:mm:ss')}
+          </div>
+          <div onClick={handleTranscriptTextEndTimeClick}
+          endtime={props.point.endtime} style={{ cursor: 'pointer', fontWeight: '600' }} className="cursor-pointer hover:underline hover:text-blue-800 w-1/4 transcript_time">
+            {moment.utc(props.point.endtime * 1000).format('HH:mm:ss')}
+          </div>
+        </div>
         <div className="w-3/4 transcript_text">{ReactHtmlParser(props.point.text)}</div>
         <hr />
       </div>
