@@ -26,7 +26,7 @@ const Metadata = (props) => {
     if (isFetching) return descLoader();
     if (dataError) return <span>Annotation structure is not correct</span>;
     if (!descriptionData) return <span>No metadata available.</span>;
-    
+
     return (
         <div className="">
             <div className="scroll custom-height overflow-x-hidden overflow-y-auto">
