@@ -147,7 +147,7 @@ const Transcripts = (props) => {
     
     return (
         <div>
-            <Search setTokens={setSearchWords} tokens={searchWords} />
+            <Search setTokens={setSearchWords} tokens={searchWords} annotation={transcriptPoints}/>
             <div className="" onMouseOver={() => handleMouseOver(true)} onMouseLeave={() => handleMouseOver(false)}>
                 <div className="auto-scroll-holder">
                     <input type="checkbox" value="1" id="autoscrollchange" onChange={handleAutoScroll} />
