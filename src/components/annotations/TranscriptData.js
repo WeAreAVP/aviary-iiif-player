@@ -77,10 +77,13 @@ const TranscriptData = (props) => {
           starttime={props.point.starttime} style={{ cursor: 'pointer', fontWeight: '600' }} className="cursor-pointer hover:underline hover:text-blue-800 w-1/4 transcript_time">
             {moment.utc(props.point.starttime * 1000).format('HH:mm:ss')}
           </div>
-          <div onClick={handleTranscriptTextEndTimeClick}
-          endtime={props.point.endtime} style={{ cursor: 'pointer', fontWeight: '600' }} className="cursor-pointer hover:underline hover:text-blue-800 w-1/4 transcript_time">
-            {moment.utc(props.point.endtime * 1000).format('HH:mm:ss')}
-          </div>
+          {
+            props.point.endtime ? <div onClick={handleTranscriptTextEndTimeClick}
+            endtime={props.point.endtime} style={{ cursor: 'pointer', fontWeight: '600' }} className="cursor-pointer hover:underline hover:text-blue-800 w-1/4 transcript_time">
+              {moment.utc(props.point.endtime * 1000).format('HH:mm:ss')}
+            </div> : ''
+          }
+          
         </div>
         <div className="w-3/4 transcript_text">{ReactHtmlParser(props.point.text)}</div>
         <hr />
