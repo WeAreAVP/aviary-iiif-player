@@ -39,7 +39,14 @@ export const VideoJS = (props) => {
                 player.vr({ projection: 'AUTO' });
             }
 
-            player.currentTime(0);
+            if(carouselID?.start_time)
+            {
+                player.currentTime(carouselID?.start_time);
+            }
+            else
+            {
+                player.currentTime(0);
+            }
         }
     }, [options, onReady, videoRef]);
 

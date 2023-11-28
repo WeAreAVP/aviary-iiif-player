@@ -21,7 +21,8 @@ export function getManifestCanvases(jsonData) {
             mediaInfo: media_info,
             manifestURL: manifest.id,
             is_3d: is_3d(canvas),
-            captions: getCaptions(canvas)
+            captions: getCaptions(canvas),
+            start_time: 0
         };
         if(manifest && 
             manifest.getSequences() &&
@@ -39,7 +40,14 @@ export function getManifestCanvases(jsonData) {
         ){
             res.thumbnail = manifest.getSequences()[0].items[0].__jsonld.accompanyingCanvas.items[0].items[0]['body']['id'];
         }
-        
+        if(manifest &&
+            manifest?.__jsonld &&
+            manifest?.__jsonld?.start &&
+            manifest?.__jsonld?.start?.selector &&
+            manifest?.__jsonld?.start?.selector?.t
+        ){
+            res.start_time = manifest.__jsonld.start.selector.t;
+        }
         return res;
     });
     return canvases;
