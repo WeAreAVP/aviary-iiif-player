@@ -23,7 +23,23 @@ export function getManifestCanvases(jsonData) {
             is_3d: is_3d(canvas),
             captions: getCaptions(canvas)
         };
-
+        if(manifest && 
+            manifest.getSequences() &&
+            manifest.getSequences().length > 0 &&
+            manifest.getSequences()[0].items &&
+            manifest.getSequences()[0].items.length > 0 &&
+            manifest.getSequences()[0].items[0]?.__jsonld &&
+            manifest.getSequences()[0].items[0]?.__jsonld?.accompanyingCanvas &&
+            manifest.getSequences()[0].items[0]?.__jsonld?.accompanyingCanvas?.items &&
+            manifest.getSequences()[0].items[0]?.__jsonld?.accompanyingCanvas?.items.length > 0 &&
+            manifest.getSequences()[0].items[0]?.__jsonld?.accompanyingCanvas?.items[0]?.items &&
+            manifest.getSequences()[0].items[0]?.__jsonld?.accompanyingCanvas?.items[0]?.items.length > 0 &&
+            manifest.getSequences()[0].items[0]?.__jsonld?.accompanyingCanvas?.items[0]?.items[0]['body'] &&
+            manifest.getSequences()[0].items[0]?.__jsonld?.accompanyingCanvas?.items[0]?.items[0]['body']['id']
+        ){
+            res.thumbnail = manifest.getSequences()[0].items[0].__jsonld.accompanyingCanvas.items[0].items[0]['body']['id'];
+        }
+        
         return res;
     });
     return canvases;
