@@ -1743,3 +1743,24 @@ video::-webkit-media-text-track-display {
     font-style: normal; }
 .vjs-icon-custombutton:before {
     content: "\f11f"; }
+
+.vjs-audio {
+    margin-top: 10%;
+}
+
+.vjs-audio > .vjs-big-play-button
+{
+    display: none;
+}
+.vjs-audio > .vjs-control-bar {
+    display: flex;
+}
+
+.vjs-audio > .vjs-control-bar > .vjs-control > .vjs-menu{
+    top: 156px;
+}
+
+.vjs-audio > .vjs-control-bar > .vjs-control > .vjs-menu > .vjs-menu-content{
+    display: flex;
+    flex-direction: column-reverse;
+}
