@@ -5,6 +5,7 @@ import { descLoader } from '../../helpers/loaders'
 import { getTranscripts } from "../../helpers/utils";
 import Search from "./menu/search";
 import Select from 'react-select';
+import axios from 'axios';
 
 const Transcripts = (props) => {
     const selectStyles = {
@@ -26,6 +27,7 @@ const Transcripts = (props) => {
     const isMouseOverRef = React.useRef(isMouseOver);
     const [transcriptNames, selectTranscriptNames] = useState([])
     const [transcriptPoints, selectTranscriptPoints] = useState([])
+    const [transcriptText, setTranscriptText] = useState("")
     const [tagsColors] = useState(['#A2849A','#C6A5AC','#DC9A83','#E1BE90','#CED1AB'])
     const setIsMouseOver = (state) => {
         isMouseOverRef.current = state;
@@ -62,7 +64,7 @@ const Transcripts = (props) => {
 
     }, [props, selectedVideo]);
 
-    const processTranscripts = (ids,val) => {
+    const processTranscripts = async (ids,val) => {
         let ann = JSON.parse(JSON.stringify(val));
         let names = [];
         let transcripts = []
@@ -73,6 +75,10 @@ const Transcripts = (props) => {
                 item.transcript.map( (transcript,i) => { item.transcript[i].text = `${item.transcript[i].text}<div class="text-right"><span class="inline-flex items-center justify-center px-2 py-1 text-xs font-bold text-gray-700 bg-gray-200 rounded" style="background-color:${colorCode}">${item.label}</span></div>` } )
                 transcripts = transcripts.concat(item.transcript)
                 names.push([colorCode,item.label])
+            }
+            if(item && item.kind && item.kind == "text"){
+                const response = await axios.get(item.src);
+                setTranscriptText(response.data)
             }
         }
         let arrObj = transcripts.sort((a, b) => (parseFloat(a.starttime) > parseFloat(b.starttime)) ? 1 : -1)
@@ -89,6 +95,7 @@ const Transcripts = (props) => {
         let ids = e.map((i, key) => {
             return  i.value;
         })
+        setTranscriptText("")
         processTranscripts(ids,annotations);
     }
 
@@ -187,6 +194,7 @@ const Transcripts = (props) => {
                             return <TranscriptData point={point} index={index} autoScrollAndHighlight={autoScrollAndHighlight} key={index} searchWords={searchWords} />
                         }
                         )}
+                        {transcriptText ? transcriptText : ''}
                     </>
                 </div>
             </div>

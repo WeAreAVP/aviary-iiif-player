@@ -10,6 +10,28 @@ export async function getManifestAnnotations(data, itemNo) {
     let annotationPage = null;
     if (canvas) {
         let canvas_annotations = canvas.__jsonld.annotations;
+        
+        let rendering = canvas.__jsonld.rendering;
+        if(rendering)
+        {
+            for (let i = 0; i < rendering.length; i++) {
+                if(rendering[i].label)
+                {
+                    let lang = Object.keys(rendering[i].label)
+                    if(lang.length > 0)
+                    {
+                        let label = rendering[i].label[lang[0]][0];
+                        annotations.push({
+                            label: label,
+                            language: lang[0],
+                            src: rendering[i].id,
+                            kind: 'text'
+                        });
+                    }
+                }
+            }
+        }
+
         if (canvas_annotations) {
             canvas_annotations.forEach(async (annotate) => {
                 annotationPage = new AnnotationPage(annotate, {});
