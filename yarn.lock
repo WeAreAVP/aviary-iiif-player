@@ -5179,6 +5179,11 @@ videojs-youtube@^2.6.1:
   dependencies:
     video.js "^5.6.0 || ^6.2.8 || ^7.0.2"
 
+vtt-to-json@^0.1.1:
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/vtt-to-json/-/vtt-to-json-0.1.1.tgz#a67bb276a0f245bd4d71267014028b65b1f465a8"
+  integrity sha512-SwMH1OHxgBKGsacdpSSYvIE+zPbjnTDDWrIFNmB6NcNEyCyA4Q7C5TWmp7uzGbSGliB+HPKr0mkexFnJd7jbHw==
+
 watchpack@^2.4.0:
   version "2.4.0"
   resolved "https://registry.npmjs.org/watchpack/-/watchpack-2.4.0.tgz"

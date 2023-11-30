@@ -1,6 +1,7 @@
 import { parseManifest, AnnotationPage, Annotation } from 'manifesto.js';
 import { isType } from './utils'
 import axios from 'axios';
+import vttToJson from 'vtt-to-json'
 
 export async function getManifestAnnotations(data, itemNo) {
     const canvas = parseManifest(data)
@@ -35,11 +36,21 @@ export async function getManifestAnnotations(data, itemNo) {
         if (canvas_annotations) {
             canvas_annotations.forEach(async (annotate) => {
                 annotationPage = new AnnotationPage(annotate, {});
+
                 if (annotationPage.getItems() !== undefined) {
-                    let transcript = formatIndexes(annotationPage.getItems());
+
+                    let transcript = await formatIndexes(annotationPage.getItems());
                     if (transcript.length > 0) {
+                        let label =  annotationPage.getLabel()?.getValue();
+                        console.log('annotationPage',annotationPage)
+
+                        if(annotationPage.getItems()[0]?.body && annotationPage.getItems()[0]?.body.label)
+                        {
+                            let lang = Object.keys(annotationPage.getItems()[0]?.body?.label)
+                            label =  annotationPage.getItems()[0]?.body?.label[lang][0];
+                        }
                         annotations.push({
-                            label: annotationPage.getLabel()?.getValue(),
+                            label: label,
                             transcript: transcript
                         });
                     }
@@ -90,18 +101,57 @@ export function parseAnnotation(annotation) {
     return hash;
 }
 
-function formatIndexes(transcript) {
+
+const formatIndexes = async (transcript) => {
     let newTranscript = {};
-    transcript.map((point, index) => {
-        let annotation = new Annotation(point, {});
-        if (annotation.getMotivation() != 'subtitling') {
-            let hash = parseAnnotation(annotation);
-            (!newTranscript.hasOwnProperty(hash.starttime)) ?
-                newTranscript[hash.starttime] = hash : newTranscript[hash.starttime]['text'] += "<br >" + hash["text"];
+    const promises = [];
+
+    for (const [index, point] of transcript.entries()) {
+        let promise;
+
+        if (point.body && point.body.format == "text/vtt") {
+            promise = axios.get(point.body.id)
+                .then(async (response) => {
+                    try {
+                        let result = await vttToJson(response.data);
+                        result.forEach((item, iindex) => {
+                            let start = parseFloat(item['start'] / 1000);
+                            let end = parseFloat(item['end'] / 1000);
+                            let text = item["part"].split("\r").filter(n => n).join("<br>");
+                            let hash = {
+                                endtime: end.toString(),
+                                starttime: start.toString(),
+                                text: text
+                            };
+                            if (!newTranscript[hash.starttime]) {
+                                newTranscript[hash.starttime] = hash;
+                            } else {
+                                newTranscript[hash.starttime]['text'] += "<br>" + hash["text"];
+                            }
+                        });
+                    } catch (err) {
+                        console.log(err);
+                    }
+                });
+        } else {
+            promise = new Promise((resolve) => {
+                let annotation = new Annotation(point, {});
+                if (annotation.getMotivation() !== 'subtitling') {
+                    let hash = parseAnnotation(annotation);
+                    (!newTranscript.hasOwnProperty(hash.starttime)) ?
+                        newTranscript[hash.starttime] = hash : newTranscript[hash.starttime]['text'] += "<br>" + hash["text"];
+                }
+                resolve();
+            });
         }
-    });
+
+        promises.push(promise);
+    }
+
+    await Promise.all(promises);
     return Object.values(newTranscript);
-}
+};
+
 
 function formatJsonIndexes(transcript) {
     let newTranscript = {};

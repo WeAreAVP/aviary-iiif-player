@@ -24,9 +24,27 @@ export const VideoJS = (props) => {
             if (!videoElement) return;
 
             const player = (playerRef.current = videojs(videoElement, options, () => {
-                console.log("player is ready");
+                console.log("player is ready",carouselID);
                 onReady && onReady(player);
             }));
+            player.ready(function () {
+                if(carouselID.captions.length > 0)
+                {
+                    carouselID.captions.map((caption, index) => {
+                        let captionOption = {
+                            kind: caption.kind,
+                            srclang: caption.language,
+                            label: caption.label,
+                            src: caption.src,
+                            mode: 'showing',
+                            default: (index == 0 ? true : false ),
+                        }
+                        player.addRemoteTextTrack(captionOption);
+                    });
+                    player.addRemoteTextTrack(captionOption);
+                    const tracks = player.remoteTextTracks();
+                }
+            });
             // player.pip();
         }
 
