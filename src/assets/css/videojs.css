@@ -1764,3 +1764,6 @@ video::-webkit-media-text-track-display {
     display: flex;
     flex-direction: column-reverse;
 }
+.vjs-menu-content {
+    bottom: 13px !important;
+}

@@ -31,17 +31,17 @@ export const VideoJS = (props) => {
                 if(carouselID.captions.length > 0)
                 {
                     carouselID.captions.map((caption, index) => {
+                        let defaultIndex = '';
+                        if(index == 0) defaultIndex = 'showing';
                         let captionOption = {
                             kind: caption.kind,
                             srclang: caption.language,
                             label: caption.label,
                             src: caption.src,
-                            mode: 'showing',
-                            default: (index == 0 ? true : false ),
+                            mode: defaultIndex,
                         }
                         player.addRemoteTextTrack(captionOption);
                     });
-                    player.addRemoteTextTrack(captionOption);
                     const tracks = player.remoteTextTracks();
                 }
             });

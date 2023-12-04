@@ -38,12 +38,13 @@ export async function getManifestAnnotations(data, itemNo) {
                 annotationPage = new AnnotationPage(annotate, {});
 
                 if (annotationPage.getItems() !== undefined) {
-
-                    let transcript = await formatIndexes(annotationPage.getItems());
+                    let transcript = formatIndexes(annotationPage.getItems());
                     if (transcript.length > 0) {
                         let label =  annotationPage.getLabel()?.getValue();
-                        console.log('annotationPage',annotationPage)
-
+                        if(label == null)
+                        {
+                            transcript = await formatIndexesNew(annotationPage.getItems())
+                        }
                         if(annotationPage.getItems()[0]?.body && annotationPage.getItems()[0]?.body.label)
                         {
                             let lang = Object.keys(annotationPage.getItems()[0]?.body?.label)
@@ -80,6 +81,7 @@ export function parseAnnotation(annotation) {
             } else if (label == "Title") {
                 values.push('<strong>' + value + '</strong>')
             } else {
+                if(value)
                 values.push(value.replaceAll("\n", "<br/>"));
             }
             content = values.join(" ");
@@ -89,6 +91,7 @@ export function parseAnnotation(annotation) {
         }
 
     } else {
+        if(body[0]?.__jsonld?.value)
         content = body[0]?.__jsonld?.value.replaceAll("\n", "<br/>");
     }
     const hash = { text: content };
@@ -101,8 +104,21 @@ export function parseAnnotation(annotation) {
     return hash;
 }
 
+function formatIndexes(transcript) {
+    let newTranscript = {};
+    transcript.map((point, index) => {
+        let annotation = new Annotation(point, {});
+        if (annotation.getMotivation() != 'subtitling') {
+            let hash = parseAnnotation(annotation);
+            (!newTranscript.hasOwnProperty(hash.starttime)) ?
+                newTranscript[hash.starttime] = hash : newTranscript[hash.starttime]['text'] += "<br >" + hash["text"];
+        }
+    });
+    return Object.values(newTranscript);
+}
 
-const formatIndexes = async (transcript) => {
+
+const formatIndexesNew = async (transcript) => {
     let newTranscript = {};
     const promises = [];
 
@@ -133,18 +149,7 @@ const formatIndexes = async (transcript) => {
                         console.log(err);
                     }
                 });
-        } else {
-            promise = new Promise((resolve) => {
-                let annotation = new Annotation(point, {});
-                if (annotation.getMotivation() !== 'subtitling') {
-                    let hash = parseAnnotation(annotation);
-                    (!newTranscript.hasOwnProperty(hash.starttime)) ?
-                        newTranscript[hash.starttime] = hash : newTranscript[hash.starttime]['text'] += "<br>" + hash["text"];
-                }
-                resolve();
-            });
         }
-
         promises.push(promise);
     }
 

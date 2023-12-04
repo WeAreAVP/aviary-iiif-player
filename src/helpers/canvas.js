@@ -69,6 +69,7 @@ function getCaptions(canvas) {
         let annotationPage = new AnnotationPage(annotations[i], {});
         if (!annotationPage) { continue; }
         let items = annotationPage.getItems();
+
         if (items) {
             let annotation = new Annotation(items[0], {});
             if (annotation.getMotivation() == 'subtitling') {
@@ -78,6 +79,19 @@ function getCaptions(canvas) {
                     src: annotation.getTarget(),
                     kind: 'captions'
                 });
+            }
+            if (annotation.getMotivation() == 'supplementing') {
+                for (let j = 0; j < items.length; j++) {
+                    if(items[j]?.body.label)
+                    {
+                        captions.push({
+                            label: items[j]?.body.label[Object.keys(items[j]?.body.label)][0],
+                            language: items[j]?.body?.language,
+                            src: items[j]?.body?.id,
+                            kind: 'captions'
+                        });
+                    }
+                }
             }
         }
     }
