@@ -13,6 +13,23 @@ export async function getManifestAnnotations(data, itemNo) {
         let canvas_annotations = canvas.__jsonld.annotations;
         
         let rendering = canvas.__jsonld.rendering;
+        let structures = data.structures;
+        if(structures)
+        {
+            structures.forEach(async (annotate) => {
+                annotationPage = new AnnotationPage(annotate, {});
+                if (annotationPage.getItems() !== undefined) {
+                    let transcript = formatIndexesItems(annotationPage.getItems());
+                    if (transcript.length > 0) {
+                        let label =  annotationPage.getLabel()?.getValue();
+                        annotations.push({
+                            label: label,
+                            transcript: transcript
+                        });
+                    }
+                }
+            })
+        }
         if(rendering)
         {
             for (let i = 0; i < rendering.length; i++) {
@@ -36,7 +53,6 @@ export async function getManifestAnnotations(data, itemNo) {
         if (canvas_annotations) {
             canvas_annotations.forEach(async (annotate) => {
                 annotationPage = new AnnotationPage(annotate, {});
-
                 if (annotationPage.getItems() !== undefined) {
                     let transcript = formatIndexes(annotationPage.getItems());
                     if (transcript.length > 0) {
@@ -117,6 +133,64 @@ function formatIndexes(transcript) {
     return Object.values(newTranscript);
 }
 
+function formatIndexesItems(transcript) {
+    let newTranscript = {};
+    let last_endtime = '';
+    transcript.map((point, index) => {
+        
+        let annotation = new Annotation(point, {});
+        let point_hash = {
+            endtime: "",
+            starttime: "",
+            child: [],
+            text: ""
+        };
+        let lang = Object.keys(point.label)
+        let label = point.label[lang[0]]
+        point_hash.text = label.join(" ")
+        if(annotation?.__jsonld?.items)
+        {
+            annotation.__jsonld.items.map((item, iindex) => {
+                if(item.items && item.items[0]?.id)
+                {
+                    let child_hash = {
+                        endtime: "",
+                        starttime: "",
+                        text: ""
+                    }
+                    const params = new URLSearchParams(item.items[0]?.id.split("#")[1]);
+                    if (params.has("t")) {
+                        let time = params.get("t").split(",");
+                        if(last_endtime == '') point_hash.starttime = time[0]; 
+                        child_hash.starttime = time[0]
+                        point_hash.endtime = time[1]; 
+                        child_hash.endtime = time[1];
+                        let ilang = Object.keys(item.label)
+                        let ilabel = item.label[lang[0]]
+                        child_hash.text = item.label[ilang[0]].join(" ")
+                        point_hash.child.push(child_hash)
+                        last_endtime = point_hash.endtime;
+                    }
+                }
+                else if(item?.id)
+                {
+                    const params = new URLSearchParams(item?.id.split("#")[1]);
+                    if (params.has("t")) {
+                        let time = params.get("t").split(",");
+                        if(time.length == 1)
+                        {
+                            point_hash.starttime = last_endtime;   
+                            point_hash.endtime = time[0]; 
+                        }
+                    }
+                }
+            });
+            
+        }
+        newTranscript[point_hash.starttime] = point_hash;
+    });
+    return Object.values(newTranscript);
+}
 
 const formatIndexesNew = async (transcript) => {
     let newTranscript = {};
