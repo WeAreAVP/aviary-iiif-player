@@ -293,27 +293,8 @@ const formatIndexesNew = async (transcript) => {
             promise = axios.get(point.body.id)
                 .then(async (response) => {
                     try {
-                        // let result = await vttToJson(response.data);
-                        // result.forEach((item, iindex) => {
-                        //     let start = parseFloat(item['start'] / 1000);
-                        //     let end = parseFloat(item['end'] / 1000);
-                        //     let text = item["part"].split("\r").filter(n => n).join("<br>");
-                        //     let hash = {
-                        //         endtime: end.toString(),
-                        //         starttime: start.toString(),
-                        //         text: text
-                        //     };
-                        //     if (!newTranscript[hash.starttime]) {
-                        //         newTranscript[hash.starttime] = hash;
-                        //     } else {
-                        //         newTranscript[hash.starttime]['text'] += "<br>" + hash["text"];
-                        //     }
-                        // });
                         let result = await convertVttToDpe(response.data);
-                        console.log('response.data',result.paragraphs)
-
                         result?.paragraphs.forEach((item, iindex) => {
-                            // console.log('item',item);
                             let hash = {
                                 endtime: item.end.toString(),
                                 starttime: item.start.toString(),
@@ -325,8 +306,6 @@ const formatIndexesNew = async (transcript) => {
                                 newTranscript[hash.starttime]['text'] += "<br>" + hash["text"];
                             }
                         });
-                        // console.log('response.data',convertVttToDpe(response.data))
-                        // convertVttToDpe()
                     } catch (err) {
                         console.log(err);
                     }
