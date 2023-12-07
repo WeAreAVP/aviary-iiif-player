@@ -21,9 +21,33 @@ export function getManifestCanvases(jsonData) {
             mediaInfo: media_info,
             manifestURL: manifest.id,
             is_3d: is_3d(canvas),
-            captions: getCaptions(canvas)
+            captions: getCaptions(canvas),
+            start_time: 0
         };
-
+        if(manifest && 
+            manifest.getSequences() &&
+            manifest.getSequences().length > 0 &&
+            manifest.getSequences()[0].items &&
+            manifest.getSequences()[0].items.length > 0 &&
+            manifest.getSequences()[0].items[0]?.__jsonld &&
+            manifest.getSequences()[0].items[0]?.__jsonld?.accompanyingCanvas &&
+            manifest.getSequences()[0].items[0]?.__jsonld?.accompanyingCanvas?.items &&
+            manifest.getSequences()[0].items[0]?.__jsonld?.accompanyingCanvas?.items.length > 0 &&
+            manifest.getSequences()[0].items[0]?.__jsonld?.accompanyingCanvas?.items[0]?.items &&
+            manifest.getSequences()[0].items[0]?.__jsonld?.accompanyingCanvas?.items[0]?.items.length > 0 &&
+            manifest.getSequences()[0].items[0]?.__jsonld?.accompanyingCanvas?.items[0]?.items[0]['body'] &&
+            manifest.getSequences()[0].items[0]?.__jsonld?.accompanyingCanvas?.items[0]?.items[0]['body']['id']
+        ){
+            res.thumbnail = manifest.getSequences()[0].items[0].__jsonld.accompanyingCanvas.items[0].items[0]['body']['id'];
+        }
+        if(manifest &&
+            manifest?.__jsonld &&
+            manifest?.__jsonld?.start &&
+            manifest?.__jsonld?.start?.selector &&
+            manifest?.__jsonld?.start?.selector?.t
+        ){
+            res.start_time = manifest.__jsonld.start.selector.t;
+        }
         return res;
     });
     return canvases;
@@ -45,6 +69,7 @@ function getCaptions(canvas) {
         let annotationPage = new AnnotationPage(annotations[i], {});
         if (!annotationPage) { continue; }
         let items = annotationPage.getItems();
+
         if (items) {
             let annotation = new Annotation(items[0], {});
             if (annotation.getMotivation() == 'subtitling') {
@@ -54,6 +79,19 @@ function getCaptions(canvas) {
                     src: annotation.getTarget(),
                     kind: 'captions'
                 });
+            }
+            if (annotation.getMotivation() == 'supplementing') {
+                for (let j = 0; j < items.length; j++) {
+                    if(items[j]?.body.label)
+                    {
+                        captions.push({
+                            label: items[j]?.body.label[Object.keys(items[j]?.body.label)][0],
+                            language: items[j]?.body?.language,
+                            src: items[j]?.body?.id,
+                            kind: 'captions'
+                        });
+                    }
+                }
             }
         }
     }

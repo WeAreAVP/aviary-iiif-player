@@ -22,7 +22,7 @@ const Video = () => {
   };
 
   if (carouselID?.format.includes("audio/")) {
-    // videoJsOptions.aspectRatio = '1:0';
+    videoJsOptions.aspectRatio = '1:0';
     videoJsOptions.controlBar = {
       "fullscreenToggle": false,
       'pictureInPictureToggle': false

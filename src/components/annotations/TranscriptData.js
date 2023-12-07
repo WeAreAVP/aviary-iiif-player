@@ -85,7 +85,29 @@ const TranscriptData = (props) => {
           }
           
         </div>
-        <div className="w-3/4 transcript_text">{ReactHtmlParser(props.point.text)}</div>
+        <div className="w-3/4 transcript_text">{ReactHtmlParser(props.point.text)}
+        <div>{props.point?.child && props.point?.child?.length>0 ? 
+        props.point?.child.map(function(object, i){
+          return (<div className="flex border-b-2" key={i}>
+            <div className="first">
+            <div onClick={handleTranscriptTextClick}
+          starttime={object.starttime} style={{ cursor: 'pointer', fontWeight: '600' }} className="cursor-pointer hover:underline hover:text-blue-800 w-1/4 transcript_time">
+            {moment.utc(object.starttime * 1000).format('HH:mm:ss')}
+          </div>
+          {
+            object.endtime ? <div onClick={handleTranscriptTextEndTimeClick}
+            endtime={object.endtime} style={{ cursor: 'pointer', fontWeight: '600' }} className="cursor-pointer hover:underline hover:text-blue-800 w-1/4 transcript_time">
+              {moment.utc(object.endtime * 1000).format('HH:mm:ss')}
+            </div> : ''
+          }
+          </div>
+            <div className="inline-flex ml-2">{object.text}</div>
+            
+            </div>);
+        })
+        : "" }</div>
+        </div>
+        
         <hr />
       </div>
     </>

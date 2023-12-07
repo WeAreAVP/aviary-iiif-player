@@ -27,6 +27,24 @@ export const VideoJS = (props) => {
                 console.log("player is ready");
                 onReady && onReady(player);
             }));
+            player.ready(function () {
+                if(carouselID.captions.length > 0)
+                {
+                    carouselID.captions.map((caption, index) => {
+                        let defaultIndex = '';
+                        if(index == 0) defaultIndex = 'showing';
+                        let captionOption = {
+                            kind: caption.kind,
+                            srclang: caption.language,
+                            label: caption.label,
+                            src: caption.src,
+                            mode: defaultIndex,
+                        }
+                        player.addRemoteTextTrack(captionOption);
+                    });
+                    const tracks = player.remoteTextTracks();
+                }
+            });
             // player.pip();
         }
 
@@ -39,7 +57,14 @@ export const VideoJS = (props) => {
                 player.vr({ projection: 'AUTO' });
             }
 
-            player.currentTime(0);
+            if(carouselID?.start_time)
+            {
+                player.currentTime(carouselID?.start_time);
+            }
+            else
+            {
+                player.currentTime(0);
+            }
         }
     }, [options, onReady, videoRef]);
 
