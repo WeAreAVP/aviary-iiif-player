@@ -1,7 +1,6 @@
 import { parseManifest, AnnotationPage, Annotation } from 'manifesto.js';
 import { isType } from './utils'
 import axios from 'axios';
-import vttToJson from 'vtt-to-json'
 
 export async function getManifestAnnotations(data, itemNo) {
     const canvas = parseManifest(data)
@@ -133,6 +132,97 @@ function formatIndexes(transcript) {
     return Object.values(newTranscript);
 }
 
+function convertVttToDpe(webvtt) {
+    webvtt = webvtt.replaceAll('\r','\n')
+    webvtt = webvtt.replaceAll('\n\n','\n')
+
+    const lines = webvtt.split('\n');
+  
+    let dpeTranscription = {
+      paragraphs: [],
+    };
+  
+    lines.forEach((line, index) => {
+      if (line.includes('-->')) {
+        let title = "";
+        if(lines[index-1].length > 0)
+        {
+            title = lines[index-1];
+        }
+        // Extract start and end time from WebVTT line
+        const timeMatch = line.match(/(\d{2}:\d{2}:\d{2}.\d{3}) --> (\d{2}:\d{2}:\d{2}.\d{3})/);
+        const startTime = timeMatch ? convertTimeToSeconds(timeMatch[1]) : 0;
+        const endTime = timeMatch ? convertTimeToSeconds(timeMatch[2]) : 0;
+        let speakerMatch = null;
+        let speaker = null;
+  
+        // Determine speaker information
+        if (lines[index + 1] && lines[index + 1].includes('<v')) {
+          speakerMatch = lines[index + 1].match(/<v ([a-zA-Z0-9]+)>/);
+          speaker = speakerMatch ? speakerMatch[1] : 'Add speaker';
+        } else if (lines[index + 1] && lines[index + 2]) {
+          const nextLine = lines[index + 2];
+          const speakerLine = lines[index + 1];
+  
+          if (nextLine.includes(':')) {
+            speakerMatch = nextLine.match(/([A-Z]+:)/);
+            speaker = speakerMatch ? speakerLine + ' ' + speakerMatch[1] : 'Add speaker';
+          } else {
+            speakerMatch = speakerLine.match(/([A-Z]+:)/);
+            speaker = speakerMatch ? speakerMatch[1] : 'Add speaker';
+          }
+        } else {
+          speaker = 'Add speaker';
+        }
+  
+        let content = '';
+        let contentStarted = false;
+  
+        // Extract content from WebVTT lines
+        for (let i = 1; lines[index + i]; i++) {
+          const currentLine = lines[index + i];
+          const nextLine = lines[index + i + 1] || '';
+  
+          if (contentStarted || (!nextLine.includes(':'))) {
+            if (!contentStarted && currentLine.includes(':')) {
+              content += currentLine.split(':')[1].trim();
+              contentStarted = true;
+            } else {
+              content += ' ' + currentLine;
+            }
+          } else if (!currentLine.includes(':') && nextLine.includes(':')) {
+            content += nextLine.split(':')[1].trim();
+            contentStarted = true;
+            i += 1;
+          }
+        }
+  
+        // Remove HTML tags and trailing spaces from content
+        content = content.replace(/<[^>]*>/g, '').trim();
+        if (content) {
+            if(title != '')
+            {
+                content = "<strong>"+title+"</strong><br>"+content;
+            }
+          // Add paragraph to DPE transcription
+          dpeTranscription.paragraphs.push({ start: startTime, end: endTime, speaker: speaker, text: content });
+        }
+      }
+    });
+  
+    /**
+     * Converts time in HH:MM:SS format to seconds.
+     * @param {string} time - Time string in HH:MM:SS format.
+     * @returns {number} - Time in seconds.
+     */
+    function convertTimeToSeconds(time) {
+      const [hours, minutes, seconds] = time.split(':').map(Number);
+      return hours * 3600 + minutes * 60 + parseFloat(seconds);
+    }
+  
+    return dpeTranscription;
+}
+
 function formatIndexesItems(transcript) {
     let newTranscript = {};
     let last_endtime = '';
@@ -203,15 +293,31 @@ const formatIndexesNew = async (transcript) => {
             promise = axios.get(point.body.id)
                 .then(async (response) => {
                     try {
-                        let result = await vttToJson(response.data);
-                        result.forEach((item, iindex) => {
-                            let start = parseFloat(item['start'] / 1000);
-                            let end = parseFloat(item['end'] / 1000);
-                            let text = item["part"].split("\r").filter(n => n).join("<br>");
+                        // let result = await vttToJson(response.data);
+                        // result.forEach((item, iindex) => {
+                        //     let start = parseFloat(item['start'] / 1000);
+                        //     let end = parseFloat(item['end'] / 1000);
+                        //     let text = item["part"].split("\r").filter(n => n).join("<br>");
+                        //     let hash = {
+                        //         endtime: end.toString(),
+                        //         starttime: start.toString(),
+                        //         text: text
+                        //     };
+                        //     if (!newTranscript[hash.starttime]) {
+                        //         newTranscript[hash.starttime] = hash;
+                        //     } else {
+                        //         newTranscript[hash.starttime]['text'] += "<br>" + hash["text"];
+                        //     }
+                        // });
+                        let result = await convertVttToDpe(response.data);
+                        console.log('response.data',result.paragraphs)
+
+                        result?.paragraphs.forEach((item, iindex) => {
+                            // console.log('item',item);
                             let hash = {
-                                endtime: end.toString(),
-                                starttime: start.toString(),
-                                text: text
+                                endtime: item.end.toString(),
+                                starttime: item.start.toString(),
+                                text: item.text
                             };
                             if (!newTranscript[hash.starttime]) {
                                 newTranscript[hash.starttime] = hash;
@@ -219,6 +325,8 @@ const formatIndexesNew = async (transcript) => {
                                 newTranscript[hash.starttime]['text'] += "<br>" + hash["text"];
                             }
                         });
+                        // console.log('response.data',convertVttToDpe(response.data))
+                        // convertVttToDpe()
                     } catch (err) {
                         console.log(err);
                     }
