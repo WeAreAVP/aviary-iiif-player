@@ -352,7 +352,11 @@ const formatIndexesNew = async (transcript) => {
                         // `error.request` is an instance of XMLHttpRequest in the browser 
                         // and an instance of http.ClientRequest in node.js
                         setTimeout(function() {
-                            document.getElementById("no_annotation").innerHTML= 'Invalid URL for transcript, please check again.'
+                            var element =  document.getElementById('no_annotation');
+                            if (typeof(element) != 'undefined' && element != null)
+                            {
+                                document.getElementById("no_annotation").innerHTML= 'Invalid URL for transcript, please check again.'
+                            }
                         }, 2000);
 
                         
