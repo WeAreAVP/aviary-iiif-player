@@ -9,12 +9,38 @@ export async function getManifestAnnotations(data, itemNo) {
     let annotations = [];
     let annotationPage = null;
     if (canvas) {
+
         let canvas_annotations = canvas.__jsonld.annotations;
-        
+        let items = canvas.__jsonld.annotations;
         let rendering = canvas.__jsonld.rendering;
         let structures = data.structures;
+        if(items)
+        {
+            items.forEach((item) => {
+                item.items.forEach((canvas_annotations_item) => {
+                    if(canvas_annotations_item?.body && canvas_annotations_item?.body?.type == "Choice")
+                    {
+                        canvas_annotations_item.body.items.forEach(async (annotate) => {
+                            annotationPage = new AnnotationPage(annotate, {});
+                            if (annotationPage?.__jsonld && annotationPage?.__jsonld?.format == "text/vtt") {
+                                let point = [{body: annotationPage.__jsonld}]
+                                let transcript = await formatIndexesNew(point)
+                                if (transcript.length > 0) {
+                                let label =  annotationPage.getLabel()?.getValue();
+                                    annotations.push({
+                                        label: label,
+                                        transcript: transcript
+                                    })
+                                }
+                            }
+                        })
+                    }
+                })
+            })
+        }
         if(structures)
         {
+
             structures.forEach(async (annotate) => {
                 annotationPage = new AnnotationPage(annotate, {});
                 if (annotationPage.getItems() !== undefined) {
@@ -31,6 +57,7 @@ export async function getManifestAnnotations(data, itemNo) {
         }
         if(rendering)
         {
+
             for (let i = 0; i < rendering.length; i++) {
                 if(rendering[i].label)
                 {
@@ -50,10 +77,12 @@ export async function getManifestAnnotations(data, itemNo) {
         }
 
         if (canvas_annotations) {
+
             canvas_annotations.forEach(async (annotate) => {
                 annotationPage = new AnnotationPage(annotate, {});
                 if (annotationPage.getItems() !== undefined) {
                     let transcript = formatIndexes(annotationPage.getItems());
+
                     if (transcript.length > 0) {
                         let label =  annotationPage.getLabel()?.getValue();
                         if(label == null)
@@ -65,10 +94,13 @@ export async function getManifestAnnotations(data, itemNo) {
                             let lang = Object.keys(annotationPage.getItems()[0]?.body?.label)
                             label =  annotationPage.getItems()[0]?.body?.label[lang][0];
                         }
-                        annotations.push({
-                            label: label,
-                            transcript: transcript
-                        });
+                        if(label)
+                        {
+                            annotations.push({
+                                label: label,
+                                transcript: transcript
+                            });
+                        }
                     }
                 } else {
                     let annot = await fetchJson(annotationPage.__jsonld?.id)
@@ -309,6 +341,31 @@ const formatIndexesNew = async (transcript) => {
                     } catch (err) {
                         console.log(err);
                     }
+                }).catch(function (error) {
+                    if (error.response) {
+                        // The request was made and the server responded with a status code
+                        // that falls out of the range of 2xx
+                        console.log('Error',error.response.data);
+                       
+                      } else if (error.request) {
+                        // The request was made but no response was received
+                        // `error.request` is an instance of XMLHttpRequest in the browser 
+                        // and an instance of http.ClientRequest in node.js
+                        setTimeout(function() {
+                            var element =  document.getElementById('no_annotation');
+                            if (typeof(element) != 'undefined' && element != null)
+                            {
+                                document.getElementById("no_annotation").innerHTML= 'Invalid URL for transcript, please check again.'
+                            }
+                        }, 2000);
+
+                        
+                        console.log('Error',error.message);
+
+                      } else {
+                        // Something happened in setting up the request that triggered an Error
+                        console.log('Error', error.message);
+                      }
                 });
         }
         promises.push(promise);
