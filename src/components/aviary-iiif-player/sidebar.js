@@ -8,12 +8,17 @@ import queryString from 'query-string';
 
 
 const Sidebar = (props) => {
+  const [openmetadata, setOpenMetaData] = useState(true)
+  const [opentranscriptdata, setOpenTranscriptData] = useState(true)
+  const [openplaylistdata, setOpenPlaylistData] = useState(true)
+
   const [opentranscript, setOpenTranscript] = useState(false)
   const [openPlaylist, setOpenPlaylist] = useState(false)
   const parsed = queryString.parse(location.search);
 
   useEffect(() => {
     try {
+
       if (parsed.tab === 'Annotations') {
         open(0);
       }
@@ -23,8 +28,28 @@ const Sidebar = (props) => {
       }
       else
       {
-        openMeta(0);
+        if(parsed.metadata !== 'false') openMeta(0); 
       }
+
+      if(parsed.metadata === 'false')
+      {
+        if(parsed.annotations !== 'false') open(0);
+        if(parsed.annotations === 'false' && parsed.items !== 'false') openPlaylistTab(0);
+        setOpenMetaData(false)
+      }
+      if(parsed.annotations === 'false')
+      {
+        if(parsed.metadata !== 'false') openMeta(0);
+        if(parsed.metadata === 'false' && parsed.items !== 'false') openPlaylistTab(0);
+        setOpenTranscriptData(false)
+      }
+      if(parsed.items === 'false')
+      {
+        if(parsed.metadata !== 'false') openMeta(0); 
+        if(parsed.metadata === 'false' && parsed.annotations !== 'false') open(0); 
+        setOpenPlaylistData(false)
+      }
+
     } catch (err) {
        
     }
@@ -58,11 +83,12 @@ const Sidebar = (props) => {
   }
 
   return (
+    
     <div className="h-full px-5">
       <div className="flex tabs-list space-x-5 py-3 px-5 mb-5 border-b">
-        <div className={`${!opentranscript && "active"} ${openPlaylist && "not-active"} cursor-pointer`} onClick={openMeta}>Metadata</div>
-        <div className={`${opentranscript && "active"} cursor-pointer`} onClick={open}>Annotations</div>
-        <div className={`${openPlaylist && "active"} cursor-pointer`} onClick={openPlaylistTab}>Items</div>
+        {openmetadata ? (<div className={`${!opentranscript && "active"} ${openPlaylist && "not-active"} cursor-pointer`} onClick={openMeta}>Metadata</div>) : '' }
+        {opentranscriptdata ? (<div className={`${ (!openmetadata || opentranscript) && "active"} cursor-pointer`} onClick={open}>Annotations</div>) : '' }
+        {openplaylistdata ? (<div className={`${openPlaylist && "active"} cursor-pointer`} onClick={openPlaylistTab}>Items</div>) : '' }
       </div>
       {openPlaylist ?
         <VideoCarousel data={props.data} />
@@ -71,9 +97,12 @@ const Sidebar = (props) => {
           <Transcripts data={props.data} />
         )
           :
+          openmetadata ? 
           (
             <Metadata data={props.data} />
           )
+          :
+          ""
 
       }
 

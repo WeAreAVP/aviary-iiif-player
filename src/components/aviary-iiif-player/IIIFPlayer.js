@@ -8,6 +8,7 @@ import Sidebar from './sidebar';
 import Player from '../player/player';
 import { getAuthService } from '../../helpers/utils';
 import Login from '../auth/login';
+import queryString from 'query-string';
 
 const IIIFPlayer = (props) => {
     const dispatch = useDispatch();
@@ -15,8 +16,14 @@ const IIIFPlayer = (props) => {
     const [playerInfo, setPlayerInfo] = useState({})
     const [data, setData] = useState({});
     const [isFetching, setIsFetching] = useState(true);
+    const parsed = queryString.parse(location.search);
+    const [fullDisplay, setFullDisplay] = useState(false);
 
     useEffect(() => {
+        if(parsed.metadata === 'false' && parsed.annotations === 'false' && parsed.items === 'false')
+        {
+            setFullDisplay(true)
+        }
         try {
             setData(props.data);
             setPlayerInfo(getPlayerInfo(props.data));
@@ -43,7 +50,7 @@ const IIIFPlayer = (props) => {
             {
                 (playerInfo.label && typeof playerInfo.firstVideo != "undefined") ?
                     <div className="xl:flex md:block bg-white min-h-screen flex-wrap">
-                        <div className="w-full lg:w-full xl:w-2/3">
+                        <div className={`w-full lg:w-full ${fullDisplay ? "" : "xl:w-2/3"}`}>
                             <div id="player_desc" className="w-full flex flex-col justify-between h-full">
                                 <Player data={data} label={playerInfo.label} />
                                 {
@@ -76,9 +83,10 @@ const IIIFPlayer = (props) => {
                                 }
                             </div>
                         </div>
-                        <div className="w-full lg:w-full xl:w-1/3 sidebar-holder border-l">
+                        {!fullDisplay ? (<div className="w-full lg:w-full xl:w-1/3 sidebar-holder border-l">
                             <Sidebar data={data} />
-                        </div>
+                        </div>) : ''}
+                        
                     </div> : 'No public media found.'
             }
 
