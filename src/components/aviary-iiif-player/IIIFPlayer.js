@@ -20,7 +20,7 @@ const IIIFPlayer = (props) => {
     const [fullDisplay, setFullDisplay] = useState(false);
 
     useEffect(() => {
-        if(parsed.metadata === 'false' && parsed.annotations === 'false' && parsed.items === 'false')
+        if(parsed.metadata === 'false' && parsed.annotations === 'false')
         {
             setFullDisplay(true)
         }
@@ -81,6 +81,7 @@ const IIIFPlayer = (props) => {
                                         </div>
                                         : ""
                                 }
+
                             </div>
                         </div>
                         {!fullDisplay ? (<div className="w-full lg:w-full xl:w-1/3 sidebar-holder border-l">
