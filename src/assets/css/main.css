@@ -155,7 +155,7 @@ html {
     font-weight: 600;
 }
 .video-details {
-    padding: 30px;
+    padding-left: 10px;
 }
 .video-details h1 {
     font-size: 30px;
@@ -429,4 +429,65 @@ html {
 }
 .css-1dyz3mf{
     flex-wrap: nowrap !important;
+}
+.slick-next{
+    background: #000 !important;
+    left:0px !important
+}
+.slick-prev{
+    background: #000 !important;
+    left:0px !important
+}
+.slick-arrow{
+position:  relative !important;
+margin: 0px 15px;
+}
+.slick-slider{
+    display: flex !important;
+    align-items: center;
+    width: 100% !important;
+}
+
+.slick-slide{
+    width: 11.1% !important;
+}
+.slick-track{
+    min-width: 1026px !important;
+    display: flex !important;
+}
+.slider-container{
+width: 85%;
+}
+.slider-cover{
+    display:flex;
+    margin: 40px 10px 0px 10px;
+}
+.heading-div{
+    width: 15%;
+}
+.slick-prev:before {
+    content: '<' !important;
+    font-weight: 900;
+    opacity: 1 !important
+}
+
+.slick-next:before {
+    content: '>' !important;
+    font-weight: 900;
+    opacity: 1 !important;
+}
+
+.slick-prev, .slick-next{
+    font-size: 18px !important;
+    background-color: #204f92 !important;
+    height: 30px !important;
+    width: 30px !important;
+    border-radius: 50%;
+}
+.heading-div h3{
+    font-weight: 800;
+}
+#my-tooltip{
+    background-color: #808080 !important;
+    color: #eee !important;
 }

@@ -10,10 +10,8 @@ import queryString from 'query-string';
 const Sidebar = (props) => {
   const [openmetadata, setOpenMetaData] = useState(true)
   const [opentranscriptdata, setOpenTranscriptData] = useState(true)
-  const [openplaylistdata, setOpenPlaylistData] = useState(true)
 
   const [opentranscript, setOpenTranscript] = useState(false)
-  const [openPlaylist, setOpenPlaylist] = useState(false)
   const parsed = queryString.parse(location.search);
 
   useEffect(() => {
@@ -21,10 +19,6 @@ const Sidebar = (props) => {
 
       if (parsed.tab === 'Annotations') {
         open(0);
-      }
-      else if(parsed.tab === 'Items')
-      {
-        openPlaylistTab(0);
       }
       else
       {
@@ -34,21 +28,14 @@ const Sidebar = (props) => {
       if(parsed.metadata === 'false')
       {
         if(parsed.annotations !== 'false') open(0);
-        if(parsed.annotations === 'false' && parsed.items !== 'false') openPlaylistTab(0);
         setOpenMetaData(false)
       }
       if(parsed.annotations === 'false')
       {
         if(parsed.metadata !== 'false') openMeta(0);
-        if(parsed.metadata === 'false' && parsed.items !== 'false') openPlaylistTab(0);
         setOpenTranscriptData(false)
       }
-      if(parsed.items === 'false')
-      {
-        if(parsed.metadata !== 'false') openMeta(0); 
-        if(parsed.metadata === 'false' && parsed.annotations !== 'false') open(0); 
-        setOpenPlaylistData(false)
-      }
+      
 
     } catch (err) {
        
@@ -66,44 +53,31 @@ const Sidebar = (props) => {
   
   const open = (e) => {
     setOpenTranscript(true);
-    setOpenPlaylist(false);
     if(e !== 0) setTag("Annotations")
   }
 
   const openMeta = (e) => {
     setOpenTranscript(false);
-    setOpenPlaylist(false);
     if(e !== 0) setTag("Metadata")
-  }
-
-  const openPlaylistTab = (e) => {
-    setOpenTranscript(false)
-    setOpenPlaylist(true);
-    if(e !== 0)setTag("Items")
   }
 
   return (
     
     <div className="h-full px-5">
       <div className="flex tabs-list space-x-5 py-3 px-5 mb-5 border-b">
-        {openmetadata ? (<div className={`${!opentranscript && "active"} ${openPlaylist && "not-active"} cursor-pointer`} onClick={openMeta}>Metadata</div>) : '' }
+        {openmetadata ? (<div className={`${!opentranscript && "active"} cursor-pointer`} onClick={openMeta}>Metadata</div>) : '' }
         {opentranscriptdata ? (<div className={`${ (!openmetadata || opentranscript) && "active"} cursor-pointer`} onClick={open}>Annotations</div>) : '' }
-        {openplaylistdata ? (<div className={`${openPlaylist && "active"} cursor-pointer`} onClick={openPlaylistTab}>Items</div>) : '' }
       </div>
-      {openPlaylist ?
-        <VideoCarousel data={props.data} />
-        :
-        opentranscript ? (
+      {opentranscriptdata ? (
           <Transcripts data={props.data} />
         )
-          :
-          openmetadata ? 
-          (
-            <Metadata data={props.data} />
-          )
-          :
-          ""
-
+        :
+        openmetadata ? 
+        (
+          <Metadata data={props.data} />
+        )
+        :
+        ""
       }
 
     </div>
