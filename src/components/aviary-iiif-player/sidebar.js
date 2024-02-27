@@ -62,13 +62,13 @@ const Sidebar = (props) => {
   }
 
   return (
-    
+   
     <div className="h-full px-5">
       <div className="flex tabs-list space-x-5 py-3 px-5 mb-5 border-b">
         {openmetadata ? (<div className={`${!opentranscript && "active"} cursor-pointer`} onClick={openMeta}>Metadata</div>) : '' }
         {opentranscriptdata ? (<div className={`${ (!openmetadata || opentranscript) && "active"} cursor-pointer`} onClick={open}>Annotations</div>) : '' }
       </div>
-      {opentranscriptdata ? (
+      {opentranscript ? (
           <Transcripts data={props.data} />
         )
         :
