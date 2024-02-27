@@ -9,7 +9,6 @@ export async function getManifestAnnotations(data, itemNo) {
     let annotations = [];
     let annotationPage = null;
     if (canvas) {
-
         let canvas_annotations = canvas.__jsonld.annotations;
         let items = canvas.__jsonld.annotations;
         let rendering = canvas.__jsonld.rendering;
@@ -17,25 +16,28 @@ export async function getManifestAnnotations(data, itemNo) {
         if(items)
         {
             items.forEach((item) => {
-                item.items.forEach((canvas_annotations_item) => {
-                    if(canvas_annotations_item?.body && canvas_annotations_item?.body?.type == "Choice")
-                    {
-                        canvas_annotations_item.body.items.forEach(async (annotate) => {
-                            annotationPage = new AnnotationPage(annotate, {});
-                            if (annotationPage?.__jsonld && annotationPage?.__jsonld?.format == "text/vtt") {
-                                let point = [{body: annotationPage.__jsonld}]
-                                let transcript = await formatIndexesNew(point)
-                                if (transcript.length > 0) {
-                                let label =  annotationPage.getLabel()?.getValue();
-                                    annotations.push({
-                                        label: label,
-                                        transcript: transcript
-                                    })
+                if(item?.items)
+                {
+                    item.items.forEach((canvas_annotations_item) => {
+                        if(canvas_annotations_item?.body && canvas_annotations_item?.body?.type == "Choice")
+                        {
+                            canvas_annotations_item.body.items.forEach(async (annotate) => {
+                                annotationPage = new AnnotationPage(annotate, {});
+                                if (annotationPage?.__jsonld && annotationPage?.__jsonld?.format == "text/vtt") {
+                                    let point = [{body: annotationPage.__jsonld}]
+                                    let transcript = await formatIndexesNew(point)
+                                    if (transcript.length > 0) {
+                                    let label =  annotationPage.getLabel()?.getValue();
+                                        annotations.push({
+                                            label: label,
+                                            transcript: transcript
+                                        })
+                                    }
                                 }
-                            }
-                        })
-                    }
-                })
+                            })
+                        }
+                    })
+                }
             })
         }
         if(structures)
@@ -77,7 +79,6 @@ export async function getManifestAnnotations(data, itemNo) {
         }
 
         if (canvas_annotations) {
-
             canvas_annotations.forEach(async (annotate) => {
                 annotationPage = new AnnotationPage(annotate, {});
                 if (annotationPage.getItems() !== undefined) {
