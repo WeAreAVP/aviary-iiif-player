@@ -5,7 +5,7 @@ import moment from 'moment'
 import thumbnail from '../../assets/images/audio-default.png';
 
 const File = (props) => {
-
+console.log('thumbnail',thumbnail)
     const dispatch = useDispatch();
     const [value, setValue] = useState(false)
 
