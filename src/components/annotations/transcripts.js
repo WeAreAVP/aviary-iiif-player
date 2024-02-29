@@ -72,7 +72,7 @@ const Transcripts = (props) => {
             let colorCode = transcriptColor(key);
             let item = ann[parseInt(ids[key]) - 1]
             if(item && item.transcript){
-                item.transcript.map( (transcript,i) => { item.transcript[i].text = `${item.transcript[i].text}<div class="text-right"><span class="inline-flex items-center justify-center px-2 py-1 text-xs font-bold text-gray-700 bg-gray-200 rounded" style="background-color:${colorCode}">${item.label}</span></div>` } )
+                item.transcript.map( (transcript,i) => { item.transcript[i].text = `${item.transcript[i].text}<div class="text-right"><span class="point_label inline-flex items-center justify-center px-2 py-1 text-xs font-bold text-gray-700 bg-gray-200 rounded" style="background-color:${colorCode}" data-tooltip-id="my-tooltip" data-tooltip-content="${item.label}">${item.label}</span></div>` } )
                 transcripts = transcripts.concat(item.transcript)
                 names.push([colorCode,item.label])
             }
@@ -168,6 +168,7 @@ const Transcripts = (props) => {
                     <label htmlFor="annotation">Annotation Sets</label>
                     <Select
                     className="select_annotations"
+                    classNamePrefix="point_label"
         defaultValue={annotations ? annotations.map((e, key) => {
             return { value: key + 1, label: e.label};
         }): {}}
@@ -182,7 +183,7 @@ const Transcripts = (props) => {
                   
                     <div>
                         {transcriptNames.map((point) => {
-                            return <span className="inline-flex items-center justify-center px-2 py-1 text-xs font-bold text-gray-700 bg-gray-200 rounded ml-1" style={{backgroundColor: point[0]}}>{point[1]}</span>
+                            return <span className="point_label inline-flex items-center justify-center px-2 py-1 text-xs font-bold text-gray-700 bg-gray-200 rounded ml-1" style={{backgroundColor: point[0]}} data-tooltip-id="my-tooltip" data-tooltip-content={point[1]}>{point[1]}</span>
                         }
                         )}
                         
