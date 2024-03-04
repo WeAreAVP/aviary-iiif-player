@@ -155,7 +155,8 @@ html {
     font-weight: 600;
 }
 .video-details {
-    padding-left: 10px;
+    padding-top: 5px;
+    border-bottom: 1px solid rgb(229,231,235);
 }
 .video-details h1 {
     font-size: 30px;
@@ -460,7 +461,7 @@ width: 85%;
 }
 .slider-cover{
     display:flex;
-    margin: 40px 10px 0px 10px;
+    margin: 20px 10px 0px 10px;
 }
 .heading-div{
     width: 15%;
@@ -490,4 +491,12 @@ width: 85%;
 #my-tooltip{
     background-color: #808080 !important;
     color: #eee !important;
+    z-index: 999999;
+}
+.point_label, .point_label__multi-value__label {
+    display: inline-block;
+    max-width: 135px !important;
+    white-space: nowrap;
+    overflow: hidden !important;
+    text-overflow: ellipsis;
 }

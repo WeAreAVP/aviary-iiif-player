@@ -36,7 +36,7 @@ const VideoCarousel = (props) => {
     <>
     <div className='slider-cover'>
     <div className='heading-div'> 
-      <h3>Media Files</h3>
+      <h3>Browse</h3>
       <h5>Viewing {updateCount + 1} of {videos.length}</h5>
       </div>
       <div className="slider-container">

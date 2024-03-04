@@ -28,12 +28,12 @@ const Player = (props) => {
     <div className="">
       <Video />
       <Tooltip id="my-tooltip" offset="5"/>
-      {parsed.items !== 'false' && props.data.items && props.data.items.length > 0 ? <VideoCarousel data={props.data} /> : "" }
       <div className='video-details'>
         <div>
           <h1 data-testid='resolved'>{label}</h1>
         </div>
       </div>
+      {parsed.items !== 'false' && props.data.items && props.data.items.length > 0 ? <VideoCarousel data={props.data} /> : "" }
     </div>
   );
 }
