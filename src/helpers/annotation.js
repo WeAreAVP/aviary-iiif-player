@@ -260,7 +260,7 @@ function formatIndexesItems(transcript) {
     let newTranscript = {};
     let last_endtime = '';
     transcript.map((point, index) => {
-        
+
         let annotation = new Annotation(point, {});
         let point_hash = {
             endtime: "",
@@ -284,6 +284,7 @@ function formatIndexesItems(transcript) {
                     const params = new URLSearchParams(item.items[0]?.id.split("#")[1]);
                     if (params.has("t")) {
                         let time = params.get("t").split(",");
+
                         if(last_endtime == '') point_hash.starttime = time[0]; 
                         child_hash.starttime = time[0]
                         point_hash.endtime = time[1]; 
@@ -294,6 +295,7 @@ function formatIndexesItems(transcript) {
                         point_hash.child.push(child_hash)
                         last_endtime = point_hash.endtime;
                     }
+
                 }
                 else if(item?.id)
                 {
@@ -305,8 +307,14 @@ function formatIndexesItems(transcript) {
                             point_hash.starttime = last_endtime;   
                             point_hash.endtime = time[0]; 
                         }
+                        if(time.length == 2)
+                        {
+                            point_hash.starttime = time[0];   
+                            point_hash.endtime = time[1]; 
+                        }
                     }
                 }
+
             });
             
         }
