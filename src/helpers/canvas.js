@@ -5,8 +5,6 @@ export function getManifestCanvases(jsonData) {
     let canvases = manifest.getSequences()[0]?.getCanvases()?.map((canvas, index) => {
         let items = canvas.getContent()?.map((canvas_item, c_index) => {
             let item = canvas_item.getBody()[0].__jsonld;
-            console.log('item',item)
-
             let label = canvas_item.getLabel()?.getValue();
             let media_info = '';
             if (label) {
