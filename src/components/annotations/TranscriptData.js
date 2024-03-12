@@ -71,6 +71,7 @@ const TranscriptData = (props) => {
         style={{ marginTop: '1.25rem', padding: '0.5rem' }}
         className="flex space-x-4 p-2 hover:bg-gray-50 transcript_item"
         ref={(el) => (textRefs.current[props.index] = el)}
+        starttime={props.point.starttime} endtime={props.point.endtime}
       >
         <div>
           <div onClick={handleTranscriptTextClick}
