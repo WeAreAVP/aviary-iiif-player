@@ -11,9 +11,10 @@ const File = (props) => {
         setValue(true)
         dispatch(setItem({ ...props }));
     };
-
     return (
-        <div style={{ display: 'flex', alignItems: 'center', marginBottom: '1.25rem' }} id={props.videoCount} className='flex items-center mb-5 playlist-box' onClick={videoOne} data-tooltip-id="my-tooltip" data-tooltip-content={props.label}>
+        <>
+        <div className='point_label_file' data-tooltip-id="my-tooltip" data-tooltip-content={props.label}>{props.label}</div>
+        <div style={{ display: 'flex', alignItems: 'center', marginBottom: '1.25rem' }} id={props.videoCount} className='flex items-center mb-5 playlist-box' onClick={videoOne} src={props.id}>
             <div style={{ marginRight: '1.25rem', position: 'relative' }} className="mr-5 relative image-holder">
                 <img
                     alt=''
@@ -25,6 +26,7 @@ const File = (props) => {
             </div>
             
         </div>
+        </>
     )
 }
 

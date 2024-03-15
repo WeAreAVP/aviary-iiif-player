@@ -14,6 +14,12 @@ export function getManifestCanvases(jsonData) {
                     label = info.splice(1).join(' - ');
                 }
             }
+            else{
+                if(label == null && manifest && manifest?.__jsonld &&  manifest?.__jsonld?.items && manifest?.__jsonld?.items.length>0 && manifest?.__jsonld?.items[index]?.label)
+                {
+                    label = manifest?.__jsonld?.items[index]?.label[Object.keys(manifest?.__jsonld?.items[index]?.label)[0]]
+                }
+            }
             let res = {
                 ...item,
                 thumbnail: canvas.getThumbnail()?.id,
@@ -53,7 +59,7 @@ export function getManifestCanvases(jsonData) {
         });
         return items;
     });
-    return canvases[0];
+    return canvases.flat();
 }
 
 function is_3d(canvas) {

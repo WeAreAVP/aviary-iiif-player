@@ -12,7 +12,6 @@ export async function getManifestAnnotations(data, itemNo) {
         let canvas_annotations = canvas.__jsonld.annotations;
         let items = canvas.__jsonld.annotations;
         let rendering = canvas.__jsonld.rendering;
-        let structures = data.structures;
         if(items)
         {
             items.forEach((item) => {
@@ -37,23 +36,6 @@ export async function getManifestAnnotations(data, itemNo) {
                             })
                         }
                     })
-                }
-            })
-        }
-        if(structures)
-        {
-
-            structures.forEach(async (annotate) => {
-                annotationPage = new AnnotationPage(annotate, {});
-                if (annotationPage.getItems() !== undefined) {
-                    let transcript = formatIndexesItems(annotationPage.getItems());
-                    if (transcript.length > 0) {
-                        let label =  annotationPage.getLabel()?.getValue();
-                        annotations.push({
-                            label: label,
-                            transcript: transcript
-                        });
-                    }
                 }
             })
         }
@@ -111,6 +93,38 @@ export async function getManifestAnnotations(data, itemNo) {
                 }
             })
         }
+    }
+    return annotations;
+}
+
+export async function getManifestStructures(data, itemNo) {
+    const canvas = parseManifest(data)
+        .getSequences()[0]
+        .getCanvases()[itemNo];
+    let annotations = [];
+    let annotationPage = null;
+    if (canvas) {
+       
+        let structures = data.structures;
+
+        if(structures)
+        {
+
+            structures.forEach(async (annotate) => {
+                annotationPage = new AnnotationPage(annotate, {});
+                if (annotationPage.getItems() !== undefined) {
+                    let transcript = formatIndexesItems(annotationPage.getItems());
+                    if (transcript.length > 0) {
+                        let label =  annotationPage.getLabel()?.getValue();
+                        annotations.push({
+                            label: label,
+                            transcript: transcript
+                        });
+                    }
+                }
+            })
+        }
+       
     }
     return annotations;
 }
@@ -257,23 +271,27 @@ function convertVttToDpe(webvtt) {
 }
 
 function formatIndexesItems(transcript) {
-    let newTranscript = {};
+    let newTranscript = [];
     let last_endtime = '';
     transcript.map((point, index) => {
-
+        
         let annotation = new Annotation(point, {});
+
         let point_hash = {
             endtime: "",
             starttime: "",
             child: [],
-            text: ""
+            text: "",
+            file: ""
         };
         let lang = Object.keys(point.label)
         let label = point.label[lang[0]]
         point_hash.text = label.join(" ")
+        point_hash.file = label.join(" ")
         if(annotation?.__jsonld?.items)
         {
             annotation.__jsonld.items.map((item, iindex) => {
+
                 if(item.items && item.items[0]?.id)
                 {
                     let child_hash = {
@@ -295,7 +313,6 @@ function formatIndexesItems(transcript) {
                         point_hash.child.push(child_hash)
                         last_endtime = point_hash.endtime;
                     }
-
                 }
                 else if(item?.id)
                 {
@@ -314,11 +331,9 @@ function formatIndexesItems(transcript) {
                         }
                     }
                 }
-
             });
-            
+            newTranscript.push(point_hash);
         }
-        newTranscript[point_hash.starttime] = point_hash;
     });
     return Object.values(newTranscript);
 }

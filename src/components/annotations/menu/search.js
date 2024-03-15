@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 
-const Search = ({ tokens, setTokens, annotation }) => {
+const Search = ({ tokens, setTokens, annotation, placeholder = "Search annotations" }) => {
     const [query, setQuery] = useState("");
     const [showResults, setShowResults] = useState(true);
     let highlightCounter = useRef({});
@@ -148,7 +148,7 @@ const Search = ({ tokens, setTokens, annotation }) => {
     return (
         <div id="transcript_search_box">
             <form onSubmit={handleSubmit}>
-                <input value={query} type="text" onChange={handleChange} placeholder="Search this Annotation" className="px-4 pt-4 pb-4 border w-full rounded-md" />
+                <input value={query} type="text" onChange={handleChange} placeholder={placeholder} className="px-4 pt-4 pb-4 border w-full rounded-md" />
             </form>
             {(tokens.length > 0) ? (
                 <div id="searched_keywords">
