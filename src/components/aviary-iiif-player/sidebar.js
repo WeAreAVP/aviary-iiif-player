@@ -45,7 +45,7 @@ const Sidebar = (props) => {
         if(parsed.metadata === 'false' && parsed.items !== 'false') openTOCTab(0);
         setOpenTranscriptData(false)
       }
-      if(parsed.items === 'false')
+      if(parsed.toc === 'false')
       {
         if(parsed.metadata !== 'false') openMeta(0); 
         if(parsed.metadata === 'false' && parsed.annotations !== 'false') open(0); 
