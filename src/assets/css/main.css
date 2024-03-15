@@ -429,7 +429,7 @@ html {
     color: #222;
 }
 .css-1dyz3mf{
-    flex-wrap: nowrap !important;
+    flex-wrap: wrap !important;
 }
 .slick-next{
     background: #000 !important;
@@ -499,4 +499,21 @@ width: 85%;
     white-space: nowrap;
     overflow: hidden !important;
     text-overflow: ellipsis;
+}
+.point_label_file {
+    display: inline-block;
+    max-width: 105px !important;
+    white-space: nowrap;
+    overflow: hidden !important;
+    text-overflow: ellipsis;
+    font-size: small;
+    font-weight: 600;
+    padding-left: 10px;
+}
+.css-1wy0on6 {
+    align-items: start !important;
+}
+.point_label__clear-indicator, .point_label__dropdown-indicator {
+    position: sticky !important;
+    top: 6px !important;
 }

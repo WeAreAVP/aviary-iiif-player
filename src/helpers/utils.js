@@ -1,6 +1,6 @@
 import { getManifestCanvases } from './canvas';
 import { parseManifest, Service } from 'manifesto.js';
-import { getManifestAnnotations } from './annotation';
+import { getManifestAnnotations, getManifestStructures } from './annotation';
 
 export function getVideos(jsonData) {
     let canvases = getManifestCanvases(jsonData)
@@ -29,6 +29,11 @@ export function getPlayerInfo(jsonData) {
 
 export async function getTranscripts(data, itemNo) {
     let annotations = await getManifestAnnotations(data, itemNo);
+    return annotations;
+}
+
+export async function getStructures(data, itemNo) {
+    let annotations = await getManifestStructures(data, itemNo);
     return annotations;
 }
 
