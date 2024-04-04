@@ -45,6 +45,7 @@ export const VideoJS = (props) => {
                     const tracks = player.remoteTextTracks();
                 }
             });
+            
             // player.pip();
         }
 

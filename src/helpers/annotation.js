@@ -10,6 +10,7 @@ export async function getManifestAnnotations(data, itemNo) {
     let annotationPage = null;
     if (canvas) {
         let canvas_annotations = canvas.__jsonld.annotations;
+
         let items = canvas.__jsonld.annotations;
         let rendering = canvas.__jsonld.rendering;
         if(items)
@@ -64,6 +65,7 @@ export async function getManifestAnnotations(data, itemNo) {
             canvas_annotations.forEach(async (annotate) => {
                 annotationPage = new AnnotationPage(annotate, {});
                 if (annotationPage.getItems() !== undefined) {
+
                     let transcript = formatIndexes(annotationPage.getItems());
 
                     if (transcript.length > 0) {
@@ -106,14 +108,15 @@ export async function getManifestStructures(data, itemNo) {
     if (canvas) {
        
         let structures = data.structures;
-
+        let items = data.items;
         if(structures)
         {
 
             structures.forEach(async (annotate) => {
                 annotationPage = new AnnotationPage(annotate, {});
                 if (annotationPage.getItems() !== undefined) {
-                    let transcript = formatIndexesItems(annotationPage.getItems());
+                    let transcript = formatIndexesItems(annotationPage.getItems(), items);
+            
                     if (transcript.length > 0) {
                         let label =  annotationPage.getLabel()?.getValue();
                         annotations.push({
@@ -170,8 +173,11 @@ function formatIndexes(transcript) {
     let newTranscript = {};
     transcript.map((point, index) => {
         let annotation = new Annotation(point, {});
+
         if (annotation.getMotivation() != 'subtitling') {
-            let hash = parseAnnotation(annotation);
+
+            let hash = parseJsonAnnotation(annotation);
+
             (!newTranscript.hasOwnProperty(hash.starttime)) ?
                 newTranscript[hash.starttime] = hash : newTranscript[hash.starttime]['text'] += "<br >" + hash["text"];
         }
@@ -270,11 +276,10 @@ function convertVttToDpe(webvtt) {
     return dpeTranscription;
 }
 
-function formatIndexesItems(transcript) {
+function formatIndexesItems(transcript, files) {
     let newTranscript = [];
     let last_endtime = '';
     transcript.map((point, index) => {
-        
         let annotation = new Annotation(point, {});
 
         let point_hash = {
@@ -282,41 +287,74 @@ function formatIndexesItems(transcript) {
             starttime: "",
             child: [],
             text: "",
-            file: ""
+            file: []
         };
         let lang = Object.keys(point.label)
         let label = point.label[lang[0]]
         point_hash.text = label.join(" ")
-        point_hash.file = label.join(" ")
+        point_hash.file = []
+
         if(annotation?.__jsonld?.items)
         {
             annotation.__jsonld.items.map((item, iindex) => {
-
                 if(item.items && item.items[0]?.id)
-                {
-                    let child_hash = {
-                        endtime: "",
-                        starttime: "",
-                        text: ""
-                    }
-                    const params = new URLSearchParams(item.items[0]?.id.split("#")[1]);
-                    if (params.has("t")) {
-                        let time = params.get("t").split(",");
+                {   item.items.map((iitem, iiindex) => {
+                        let child_hash = {
+                            endtime: "",
+                            starttime: "",
+                            text: "",
+                            file: ""
+                        }
+                        const params = new URLSearchParams(iitem?.id.split("#")[1]);
+                        let id = iitem?.id.split("#")[0]
+                        let obj = files.find(x => x.id === id);
+                        let canvas_id = files.indexOf(obj);
+                        if(files[canvas_id]?.label)
+                        {
+                            lang = Object.keys(files[canvas_id]?.label)
+                            child_hash.file = files[canvas_id]?.label[lang[0]][0]
+                            point_hash.file.push(child_hash.file)
+                            point_hash.file = [...new Set(point_hash.file)]
+                        }
+                        
+                        if (params.has("t")) {
+                            let time = params.get("t").split(",");
 
-                        if(last_endtime == '') point_hash.starttime = time[0]; 
-                        child_hash.starttime = time[0]
-                        point_hash.endtime = time[1]; 
-                        child_hash.endtime = time[1];
-                        let ilang = Object.keys(item.label)
-                        let ilabel = item.label[lang[0]]
-                        child_hash.text = item.label[ilang[0]].join(" ")
-                        point_hash.child.push(child_hash)
-                        last_endtime = point_hash.endtime;
-                    }
+                            if(last_endtime == '') point_hash.starttime = time[0]; 
+                            child_hash.starttime = time[0]
+                            point_hash.endtime = time[1]; 
+                            child_hash.endtime = time[1];
+                            let ilang = Object.keys(item.label)
+                            let ilabel = item.label[lang[0]]
+                            child_hash.text = item.label[ilang[0]].join(" ")
+                            point_hash.child.push(child_hash)
+                            last_endtime = point_hash.endtime;
+                        }
+                    })
                 }
                 else if(item?.id)
                 {
                     const params = new URLSearchParams(item?.id.split("#")[1]);
+                    
+                    let id = item?.id.split("#")[0]
+                    let obj = files.find(x => x.id === id);
+                    let canvas_id = files.indexOf(obj);
+                    let child_hash = {
+                        endtime: "",
+                        starttime: "",
+                        text: "",
+                        file: ""
+                    }
+
+                    if(files[canvas_id]?.label)
+                    {
+                        lang = Object.keys(files[canvas_id]?.label)
+                        child_hash.file = files[canvas_id]?.label[lang[0]][0]
+                        point_hash.file.push( files[canvas_id]?.label[lang[0]][0])
+                        point_hash.file = [...new Set(point_hash.file)]
+                    }
+                    
+
                     if (params.has("t")) {
                         let time = params.get("t").split(",");
                         if(time.length == 1)
@@ -326,8 +364,12 @@ function formatIndexesItems(transcript) {
                         }
                         if(time.length == 2)
                         {
-                            point_hash.starttime = time[0];   
+                            if(last_endtime == '') point_hash.starttime = time[0]; 
+                            child_hash.starttime = time[0]
                             point_hash.endtime = time[1]; 
+                            child_hash.endtime = time[1];
+                            point_hash.child.push(child_hash)
+                            last_endtime = point_hash.endtime;
                         }
                     }
                 }

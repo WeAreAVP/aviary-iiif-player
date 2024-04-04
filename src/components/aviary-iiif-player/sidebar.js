@@ -20,19 +20,6 @@ const Sidebar = (props) => {
 
   useEffect(() => {
     try {
-
-      if (parsed.tab === 'Annotations') {
-        open(0);
-      }
-      else if(parsed.tab === 'TOC')
-      {
-        openTOCTab(0);
-      }
-      else
-      {
-        if(parsed.metadata !== 'false') openMeta(0); 
-      }
-
       if(parsed.metadata === 'false')
       {
         if(parsed.annotations !== 'false') open(0);
@@ -51,6 +38,19 @@ const Sidebar = (props) => {
         if(parsed.metadata === 'false' && parsed.annotations !== 'false') open(0); 
         setOpenTOCData(false)
       }
+      if (parsed.tab === 'Annotations') {
+        open(0);
+      }
+      else if(parsed.tab === 'TOC')
+      {
+        openTOCTab(0);
+      }
+      else
+      {
+        if(parsed.metadata !== 'false') openMeta(0); 
+      }
+
+      
       
 
     } catch (err) {
@@ -103,7 +103,7 @@ const Sidebar = (props) => {
         :
         openmetadata ? 
         (
-          <Metadata data={props.data} />
+          <Metadata data={props.data} metadata={props.metadata} />
         )
         :
         ""

@@ -14,6 +14,7 @@ const Main = (props) => {
     const [error, setError] = useState(false)
     const [dataError, setDataError] = useState(false)
     const [data, setData] = useState({})
+    const [metadata, setMetaData] = useState({})
     const [isFetching, setIsFetching] = useState(true);
     const [service, setService] = useState({});
     const [authToken, setAuthToken] = useState({});
@@ -24,12 +25,15 @@ const Main = (props) => {
     useEffect(() => {
         const fetching = async () => {
             try {
-                const response = await axios.get(props.manifest);
+                const response = await fetch(props.manifest);
+                let dataResult = await response.text()
+                dataResult = JSON.parse(dataResult)
                 try {
-                    var authService = getAuthService(response.data)
+                    var authService = getAuthService(dataResult)
                     setService(authService);
                     if (!authService) {
-                        setData(response.data);
+                        setData(dataResult);
+                        setMetaData(dataResult.metadata)
                     }
                 } catch (err) {
                     console.log(err)
@@ -70,7 +74,6 @@ const Main = (props) => {
     if (isFetching) return <div className="px-4 py-2 pb-4">{mainLoader()}</div>;
     if (error) return <span data-testid='loading'>{errorMsg}</span>;
     if (dataError) return <span data-testid='struct'>Struct is not Correct</span>;
-
     return (
         <div className="min-h-screen w-full">
             {
@@ -79,7 +82,7 @@ const Main = (props) => {
                         (props.component == "player") ? <RootPlay data={data} /> :
                             (props.component == "annotation") ? <RootTrans data={data} /> :
                                 (props.component == "metadata") ? <RootDesc data={data} /> :
-                                    (props.component == "items") ? <RootCar data={data} /> : <IIIFPlayer data={data} />
+                                    (props.component == "items") ? <RootCar data={data} /> : <IIIFPlayer data={data} metadata={metadata} />
                         : (skipAuth === true) ? 'No public media found.' : ''
             }
 
