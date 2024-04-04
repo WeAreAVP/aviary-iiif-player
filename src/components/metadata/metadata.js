@@ -11,7 +11,7 @@ const Metadata = (props) => {
 
     useEffect(() => {
         try {
-            setDescriptionData(getMetadata(props.data));
+            setDescriptionData(getMetadata(props.data,props.metadata));
             setIsFetching(false);
         } catch (err) {
             setDataError(true)
@@ -25,8 +25,8 @@ const Metadata = (props) => {
 
     if (isFetching) return descLoader();
     if (dataError) return <span>Annotation structure is not correct</span>;
-    if (!descriptionData) return <span>No metadata available.</span>;
-
+    if (!descriptionData || descriptionData.length == 0) return <span>No metadata available.</span>;
+    console.log('descriptionData',descriptionData)
     return (
         <div className="">
             <div className="scroll custom-height overflow-x-hidden overflow-y-auto">

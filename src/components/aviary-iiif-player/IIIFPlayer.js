@@ -11,6 +11,7 @@ import Login from '../auth/login';
 import queryString from 'query-string';
 
 const IIIFPlayer = (props) => {
+
     const dispatch = useDispatch();
     const [dataError, setDataError] = useState(false)
     const [playerInfo, setPlayerInfo] = useState({})
@@ -85,7 +86,7 @@ const IIIFPlayer = (props) => {
                             </div>
                         </div>
                         {!fullDisplay ? (<div className="w-full lg:w-full xl:w-1/3 sidebar-holder border-l">
-                            <Sidebar data={data} />
+                            <Sidebar data={data} metadata={props.metadata}/>
                         </div>) : ''}
                         
                     </div> : 'No public media found.'

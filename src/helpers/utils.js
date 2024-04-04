@@ -37,10 +37,19 @@ export async function getStructures(data, itemNo) {
     return annotations;
 }
 
-export function getMetadata(data) {
+export function getMetadata(data, meta=[]) {
+    let metadata = [];
+    data.metadata = []
+
+    if (meta.length > 0) {
+        meta.map((m, i) => {
+            let lang = Object.keys(m.label)[0]
+            let homepageMetadata = { "label": { "en": m?.label[lang] }, "value": { "en": m?.value[lang] } }
+            metadata.push(homepageMetadata)
+        })
+        data.metadata = metadata
+    }
     if (data?.homepage != undefined) {
-        data.metadata = []
-        let metadata = [];
         data.homepage.map((m, i) => {
             let homepageMetadata = { "label": { "en": ["Source URI"] }, "value": { "en": [m?.label.en] } }
             metadata.push(homepageMetadata)
@@ -52,6 +61,15 @@ export function getMetadata(data) {
             })
         }
         data.metadata = metadata
+    }
+    if (data?.rights != undefined) {
+        let rights = { "label": { "en": ["Rights"] }, "value": { "en": [data?.rights] } }
+        metadata.push(rights)
+    }
+    if (data?.summary != undefined) {
+        let lang = Object.keys(data?.summary)
+        let summary = { "label": { "en": ["Summary"] }, "value": { "en": data?.summary[lang] } }
+        metadata.push(summary)
     }
     return data.metadata;
 }

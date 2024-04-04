@@ -50,6 +50,7 @@ const Transcripts = (props) => {
         });
         promiseThen
             .then((val) => {
+                console.log('val',val)
                 setAnnotations(val);
                 let arr = []
                 for (let key in val) {

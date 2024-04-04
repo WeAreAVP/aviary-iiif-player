@@ -20,10 +20,16 @@ export function getManifestCanvases(jsonData) {
                     label = manifest?.__jsonld?.items[index]?.label[Object.keys(manifest?.__jsonld?.items[index]?.label)[0]]
                 }
             }
+            let label_id="item-" + index
+            if(label && label.length > 0)
+            {
+                label_id = label[0].split(' ').join('_')
+            }
             let res = {
                 ...item,
                 thumbnail: canvas.getThumbnail()?.id,
                 videoCount: "item-" + index,
+                label_id: "item-" + label_id,
                 label: label,
                 mediaInfo: media_info,
                 manifestURL: manifest.id,
