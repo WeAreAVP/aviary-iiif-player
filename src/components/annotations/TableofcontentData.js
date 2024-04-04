@@ -41,8 +41,6 @@ const TableofcontentData = (props) => {
   const handleTranscriptTextClick = (e,index,file) => {
     e.preventDefault();
     if (player) {
-      console.log(e.currentTarget.getAttribute('starttime'),index,file)
-
       let video;
       if(file)
       {
@@ -56,8 +54,6 @@ const TableofcontentData = (props) => {
      
       if(video && video.getAttribute('src') !== player.src())
       {
-        console.log('player',player.src())
-        console.log('src',video.getAttribute('src'))
         player.src({ src: video.getAttribute('src'), type: video.getAttribute('type') });
         player.play();
         player.currentTime(e.currentTarget.getAttribute('starttime'));
@@ -154,7 +150,6 @@ const TableofcontentData = (props) => {
                   }
                 </div>)})
     }
-    console.log('file_points',file_points)
 
   }
   let last_text = ''
