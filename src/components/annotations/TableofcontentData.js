@@ -99,7 +99,7 @@ const TableofcontentData = (props) => {
     e.currentTarget.classList.add('active');
   };
   let points =  <div className="flex">
-                  <div className="transcript_text italic pr-2">{props.point.file}</div>
+                  <div className="transcript_text italic">{props.point.file}</div>
                   <div onClick={(e)=>handleTranscriptTextClick(e,props.index,props.point.file)}
                   starttime={props.point.starttime} style={{ cursor: 'pointer', fontWeight: '500' }} className="cursor-pointer hover:underline hover:text-blue-800 transcript_time">
                     {moment.utc(props.point.starttime * 1000).format('HH:mm:ss')}
@@ -136,7 +136,7 @@ const TableofcontentData = (props) => {
     if(file_points && file_points.length > 0)
     {
       points =  file_points.map(function(file_point, i){ return (<div className="flex">
-                  { file_points.length > 1 ? <div className="transcript_text italic pr-2">{file_point.file}</div> : '' }
+                  { file_points.length > 1 ? <div className="transcript_text italic">{file_point.file}</div> : '' }
                   <div onClick={(e)=>handleTranscriptTextClick(e,props.index,file_point.file)}
                   starttime={file_point.starttime} style={{ cursor: 'pointer', fontWeight: '500' }} className="cursor-pointer hover:underline hover:text-blue-800 transcript_time">
                     {moment.utc(file_point.starttime * 1000).format('HH:mm:ss')}
@@ -185,7 +185,7 @@ const TableofcontentData = (props) => {
                   {last_text != object.text ? <div className="inline-flex"><b>{object.text}</b></div> : ''}
                   
                   <div className="first flex">
-                  <div className="transcript_text italic pr-2"><small>{ReactHtmlParser(object.file)}</small></div>
+                  <div className="transcript_text italic"><small>{ReactHtmlParser(object.file)}</small></div>
 
                   <div onClick={(e)=>handleTranscriptTextClick(e,props.index,object.file)}
                 starttime={object.starttime} style={{ cursor: 'pointer', fontWeight: '500', fontSize: '90%', lineHeight: '28px' }} className="cursor-pointer hover:underline hover:text-blue-800 transcript_time">
