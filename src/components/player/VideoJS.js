@@ -82,7 +82,7 @@ export const VideoJS = (props) => {
     }, [playerRef]);
     return (
         <div data-vjs-player>
-            {(carouselID?.format.includes("audio/") ? (
+            {(carouselID?.format?.includes("audio/") ? (
                 <audio
                     poster={carouselID?.thumbnail}
                     ref={videoRef}

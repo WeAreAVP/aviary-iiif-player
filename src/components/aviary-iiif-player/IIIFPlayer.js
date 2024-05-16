@@ -51,42 +51,15 @@ const IIIFPlayer = (props) => {
             {
                 (playerInfo.label && typeof playerInfo.firstVideo != "undefined") ?
                     <div className="xl:flex md:block bg-white min-h-screen flex-wrap">
-                        <div className={`w-full lg:w-full ${fullDisplay ? "" : "xl:w-2/3"}`}>
+                        <div className={`w-full lg:w-full ${fullDisplay ? "" : "xl:w-3/5"}`}>
                             <div id="player_desc" className="w-full flex flex-col justify-between h-full">
                                 <Player data={data} label={playerInfo.label} />
-                                {
-                                    (playerInfo.logoInformation) ?
-                                        <div className="">
-                                            <div className='flex items-center space-x-3 py-3 px-5 border-t'>
-                                                <p
-
-                                                    className="text-sm"
-                                                >
-                                                    About the Provider:
-                                                </p>
-                                                <div className=''>
-                                                    <div className='flex items-center'>
-                                                        <a href={playerInfo.pageLink}>
-                                                            <img alt='' className=' object-contain w-5 h-5 mr-2' src={playerInfo.logoImage} />
-                                                        </a>
-                                                        <div>
-                                                            {playerInfo.logoInformation.map(({ label }) => (
-                                                                <div key={"provider-" + label.en}>
-                                                                    <p className='font-bold text-sm'>{label.en}</p>
-                                                                </div>
-                                                            ))}
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        : ""
-                                }
+                                
 
                             </div>
                         </div>
-                        {!fullDisplay ? (<div className="w-full lg:w-full xl:w-1/3 sidebar-holder border-l">
-                            <Sidebar data={data} metadata={props.metadata}/>
+                        {!fullDisplay ? (<div className="w-full lg:w-full xl:w-2/5 sidebar-holder border-l">
+                            <Sidebar data={data} metadata={props.metadata} playerInfo={playerInfo}/>
                         </div>) : ''}
                         
                     </div> : 'No public media found.'

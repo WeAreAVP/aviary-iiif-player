@@ -67,7 +67,6 @@ export async function getManifestAnnotations(data, itemNo) {
                 if (annotationPage.getItems() !== undefined) {
 
                     let transcript = formatIndexes(annotationPage.getItems());
-
                     if (transcript.length > 0) {
                         let label =  annotationPage.getLabel()?.getValue();
                         if(label == null)
@@ -481,10 +480,18 @@ export function parseJsonAnnotation(annotation) {
     }
     const hash = { text: content };
     const target = annotation.getTarget();
-    const time = target.selector?.t?.split(",");
-    if (time) {
+    if(target?.selector?.t)
+    {
+        let time = target?.selector?.t?.split(",");
         hash.starttime = time[0];
-        hash.endtime = time[1];
+        if(time.length > 1) hash.endtime = time[1];
+    }
+    else
+    {
+        const params = new URLSearchParams(target.split("#")[1])
+        let time = params.get("t").split(",");
+        hash.starttime = time[0];
+        if(time.length > 1) hash.endtime = time[1];
     }
     return hash;
 }
