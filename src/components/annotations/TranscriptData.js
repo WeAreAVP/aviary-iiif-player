@@ -68,36 +68,40 @@ const TranscriptData = (props) => {
   return (
     <>
       <div
-        style={{ marginTop: '1.25rem', padding: '0.5rem' }}
-        className="flex space-x-4 p-2 hover:bg-gray-50 transcript_item"
+        style={{ padding: '0px 0.5rem 0px 0.5rem' }}
+        className="flex space-x-4 hover:bg-gray-50 transcript_item"
         ref={(el) => (textRefs.current[props.index] = el)}
         starttime={props.point.starttime} endtime={props.point.endtime}
       >
         <div>
-          <div onClick={handleTranscriptTextClick}
-          starttime={props.point.starttime} style={{ cursor: 'pointer', fontWeight: '600' }} className="cursor-pointer hover:underline hover:text-blue-800 w-1/4 transcript_time">
-            {moment.utc(props.point.starttime * 1000).format('HH:mm:ss')}
-          </div>
+          {
+            props.point.starttime ? <div onClick={handleTranscriptTextClick}
+            starttime={props.point.starttime} style={{ cursor: 'pointer', fontWeight: '600' }} className="cursor-pointer hover:underline hover:text-blue-800 w-1/5 transcript_time">
+              {moment.utc(props.point.starttime * 1000).format('HH:mm:ss')}
+            </div> : ''
+          }
           {
             props.point.endtime ? <div onClick={handleTranscriptTextEndTimeClick}
-            endtime={props.point.endtime} style={{ cursor: 'pointer', fontWeight: '600' }} className="cursor-pointer hover:underline hover:text-blue-800 w-1/4 transcript_time">
+            endtime={props.point.endtime} style={{ cursor: 'pointer', fontWeight: '600' }} className="cursor-pointer hover:underline hover:text-blue-800 w-1/5 transcript_time">
               {moment.utc(props.point.endtime * 1000).format('HH:mm:ss')}
             </div> : ''
           }
           
         </div>
-        <div className="w-3/4 transcript_text">{ReactHtmlParser(props.point.text)}
+        <div className="w-4/5 transcript_text">{ReactHtmlParser(props.point.text)}
         <div>{props.point?.child && props.point?.child?.length>0 ? 
         props.point?.child.map(function(object, i){
           return (<div className="flex border-b-2" key={i}>
-            <div className="first">
-            <div onClick={handleTranscriptTextClick}
-          starttime={object.starttime} style={{ cursor: 'pointer', fontWeight: '600' }} className="cursor-pointer hover:underline hover:text-blue-800 w-1/4 transcript_time">
-            {moment.utc(object.starttime * 1000).format('HH:mm:ss')}
-          </div>
+          <div className="first">
+          {
+            object.starttime ? <div onClick={handleTranscriptTextClick}
+            starttime={object.starttime} style={{ cursor: 'pointer', fontWeight: '600' }} className="cursor-pointer hover:underline hover:text-blue-800 w-1/5 transcript_time">
+              {moment.utc(object.starttime * 1000).format('HH:mm:ss')}
+            </div> : ''
+          }
           {
             object.endtime ? <div onClick={handleTranscriptTextEndTimeClick}
-            endtime={object.endtime} style={{ cursor: 'pointer', fontWeight: '600' }} className="cursor-pointer hover:underline hover:text-blue-800 w-1/4 transcript_time">
+            endtime={object.endtime} style={{ cursor: 'pointer', fontWeight: '600' }} className="cursor-pointer hover:underline hover:text-blue-800 w-1/5 transcript_time">
               {moment.utc(object.endtime * 1000).format('HH:mm:ss')}
             </div> : ''
           }

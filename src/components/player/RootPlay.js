@@ -39,7 +39,7 @@ const RootPlay = (props) => {
     return (
         <div style={{ minHeight: '100vh', width: '100%' }} className="min-h-screen w-full">
             <div style={{ minHeight: '100vh', display: 'flex', background: 'white', flexWrap: 'wrap' }} className="xl:flex md:block bg-white min-h-screen flex-wrap">
-                <div style={{ width: '100%' }} className="w-full lg:w-full xl:w-2/3">
+                <div style={{ width: '100%' }} className="w-full lg:w-full xl:w-3/5">
                     <div style={{ width: '100%', display: 'flex', flexDirection: 'column' }} id="player_desc" className="w-full flex flex-col justify-between h-full">
                         <Player data={data} label={playerInfo.label}/>
                         {

@@ -157,6 +157,16 @@ html {
 .video-details {
     padding-top: 5px;
     border-bottom: 1px solid rgb(229,231,235);
+    padding-left: 10px;
+    padding-right: 10px;
+}
+.information {
+    background-color: #f1f3f6;
+}
+.sidebar-holder{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 }
 .video-details h1 {
     font-size: 30px;
@@ -189,11 +199,11 @@ html {
 }
 .custom-select {
     position: relative;
-    padding-top: 10px;
+    padding-top: 0px;
 }
 .custom-select label {
     position: absolute;
-    top: 2px;
+    top: -10px;
     left: 15px;
     font-size: 12px;
     background: #fff;
@@ -204,7 +214,7 @@ html {
 }
 #transcript_search_box {
     margin: -20px -20px 10px;
-    padding: 15px 20px;
+    padding: 5px 20px;
 }
 .auto-scroll-holder {
     position: relative;
@@ -229,6 +239,10 @@ html {
     top: 2px;
     left: 0;
     border: 1px solid #e5e7eb;
+}
+.expand-toggle{
+    border-left: 2px solid #7d7d7d;
+    padding-left: 3px;
 }
 .auto-scroll-holder input[type="checkbox"] + label:before {
     content: "";
@@ -409,7 +423,29 @@ html {
     .custom-height-transcript {
         height: auto;
     }
+    .sticky_header{
+        position: fixed;
+        width: 100%;
+        z-index: 1000;
+        background-color: #fff;
+    }
+    .sticky_div {
+        height: 51px;
+        margin-top: 10px;
+    }
+    .audio_header{
+        height: 110px;
+        position: relative;
+    }
+    .vjs-audio > .vjs-control-bar{
+        position: unset !important;
+    }
+    .vjs-audio{
+        margin-top: 0px !important;
+    }
+   
 }
+
 
 .transcript_data .transcript_item.active {
     background: #ddeaf0;

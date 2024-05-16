@@ -769,8 +769,8 @@ body.vjs-full-window {
     display: none;
     position: absolute;
     bottom: 10px;
-    left: 10px;
-    right: 10px;
+    left: 0px;
+    right: 0px;
     height: 3.8em;
     border-radius: 4px;
     background-color: #2B333F;
@@ -1745,7 +1745,7 @@ video::-webkit-media-text-track-display {
     content: "\f11f"; }
 
 .vjs-audio {
-    margin-top: 10%;
+    margin-top: 7%;
 }
 
 .vjs-audio > .vjs-big-play-button

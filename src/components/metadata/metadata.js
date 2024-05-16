@@ -39,6 +39,7 @@ const Metadata = (props) => {
                     </div>
                 ))}
             </div>
+            
         </div >
     )
 }

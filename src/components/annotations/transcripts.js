@@ -3,12 +3,17 @@ import { useDispatch, useSelector } from "react-redux";
 import TranscriptData from "./TranscriptData";
 import { descLoader } from '../../helpers/loaders'
 import { getTranscripts } from "../../helpers/utils";
+import { IoIosArrowDown } from "react-icons/io";
+import { IoIosArrowForward } from "react-icons/io";
 
 import Search from "./menu/search";
 import Select from 'react-select';
 import axios from 'axios';
+import chroma from "chroma-js";
 
 const Transcripts = (props) => {
+    const [transcriptNames, selectTranscriptNames] = useState([])
+    const [open, setOpen] = useState(true);
     const selectStyles = {
         control: (base) => ({
           ...base,
@@ -16,8 +21,28 @@ const Transcripts = (props) => {
           maxHeight: '75px',
           minHeight: '45px',
           overflow: 'auto',
-      }),
-     
+        }),
+        multiValue: (styles, { data }) => {
+            const color = chroma(transcriptNamesColor(data.label));
+            return {
+              ...styles,
+              backgroundColor: color.css(),
+            };
+        },
+        multiValueLabel: (styles, { data }) => ({
+            ...styles,
+            color: '#262626',
+            fontWeight: 700,
+        }),
+        multiValueRemove: (styles, { data }) => ({
+            ...styles,
+            color: '#cccccc',
+            ':hover': {
+              backgroundColor: data.color,
+              color: '#cccccc',
+            },
+        }),
+        
     }
     const selectedVideo = useSelector(state => state.selectedItem);
     const [dataError, setDataError] = useState(false)
@@ -27,10 +52,9 @@ const Transcripts = (props) => {
     const [searchWords, setSearchWords] = useState([]);
     let isMouseOver = false;
     const isMouseOverRef = React.useRef(isMouseOver);
-    const [transcriptNames, selectTranscriptNames] = useState([])
     const [transcriptPoints, selectTranscriptPoints] = useState([])
     const [transcriptText, setTranscriptText] = useState("")
-    const [tagsColors] = useState(['#A2849A','#C6A5AC','#DC9A83','#E1BE90','#CED1AB'])
+    const [tagsColors] = useState(['#9AA6C1','#C6A5AC','#DFA590','#E1BE90','#CED1AB'])
     const setIsMouseOver = (state) => {
         isMouseOverRef.current = state;
         isMouseOver = state;
@@ -92,13 +116,22 @@ const Transcripts = (props) => {
         let val = parseInt(id)%5;
         return tagsColors[val];
     }
+    
+    const transcriptNamesColor = (label) => {
+        let color = "gray";
+         transcriptNames.map((i) => {
+            if(i[1] == label)
+            color = i[0];
+        })
+        return color;
+    }
 
-    const handleSelectTranscript = (e) => {
+    const handleSelectTranscript = async (e) => {
         let ids = e.map((i, key) => {
             return  i.value;
         })
         setTranscriptText("")
-        processTranscripts(ids,annotations);
+        await processTranscripts(ids,annotations);
     }
 
     const handleAutoScroll = (e) => {
@@ -157,49 +190,58 @@ const Transcripts = (props) => {
     if (isFetching) return descLoader();
     if (dataError) return <span>Annotation structure is not correct</span>;
     if (annotations.length <= 0) return <span id="no_annotation">No annotation available for this file.</span>;
-    
     return (
         <div>
-            <Search setTokens={setSearchWords} tokens={searchWords} annotation={transcriptPoints}/>
-            <div className="" onMouseOver={() => handleMouseOver(true)} onMouseLeave={() => handleMouseOver(false)}>
-                <div className="auto-scroll-holder">
-                    <input type="checkbox" value="1" id="autoscrollchange" onChange={handleAutoScroll} />
-                    <label htmlFor="autoscrollchange">Auto Scroll with Media</label>
-                </div>
-                <div className="custom-select select-react">
-                    <label htmlFor="annotation">Annotation Sets</label>
-                    <Select
-                    className="select_annotations"
-                    classNamePrefix="point_label"
-        defaultValue={annotations ? annotations.map((e, key) => {
-            return { value: key + 1, label: e.label};
-        }): {}}
-        onChange={handleSelectTranscript}
-        options={annotations.map((e, key) => {
-            return { value: key + 1, label: e.label};
-        })}
-        isMulti={true}
-        hideSelectedOptions={false}
-        styles={selectStyles}
-      />
-                  
-                    <div className="mt-3">
-                        {transcriptNames.map((point) => {
-                            return <span className="point_label inline-flex items-center justify-center px-2 py-1 text-xs font-bold text-gray-700 bg-gray-200 rounded ml-1" style={{backgroundColor: point[0]}} data-tooltip-id="my-tooltip" data-tooltip-content={point[1]}>{point[1]}</span>
-                        }
-                        )}
-                        
+             <button
+                aria-label="expand row"
+                variant="plain"
+                color="neutral"
+                size="sm"
+                className="mb-5"
+                onClick={() => setOpen(!open)}
+            >
+                {open ? <div className="flex relative pl-4"><IoIosArrowDown className="absolute " style={{left: '-6px', top: '4px'}} /> Toggle Controls </div> : <div className="flex relative pl-4"><IoIosArrowForward className="absolute" style={{left: '-6px', top: '4px'}} /> Toggle Controls </div>}
+            </button>
+            {open ? 
+            <div className="expand-toggle">
+                <Search setTokens={setSearchWords} tokens={searchWords} annotation={transcriptPoints}/>
+                <div className="" onMouseOver={() => handleMouseOver(true)} onMouseLeave={() => handleMouseOver(false)}>
+                    <div className="auto-scroll-holder">
+                        <input type="checkbox" value="1" id="autoscrollchange" onChange={handleAutoScroll} />
+                        <label htmlFor="autoscrollchange">Auto Scroll with Media</label>
                     </div>
+                    <div className="custom-select select-react">
+                        <label htmlFor="annotation">Annotation Sets</label>
+                        <Select
+                        className="select_annotations"
+                        classNamePrefix="point_label"
+                        defaultValue={annotations ? annotations.map((e, key) => {
+                            return { value: key + 1, label: e.label};
+                        }): {}}
+                        onChange={handleSelectTranscript}
+                        options={annotations.map((e, key) => {
+                            return { value: key + 1, label: e.label};
+                        })}
+                        isMulti={true}
+                        hideSelectedOptions={false}
+                        styles={selectStyles}
+            
+                        />
+                    
+                    
+                    </div>
+                
                 </div>
-                <div className="custom-height scroll overflow-x-hidden overflow-y-auto mt-2 bg-white rounded-sm p-2" id="transcript_data" ref={transcriptContainerRef}>
-                    <>
-                        {transcriptPoints.map((point, index) => {
-                            return <TranscriptData point={point} index={index} autoScrollAndHighlight={autoScrollAndHighlight} key={index} searchWords={searchWords} />
-                        }
-                        )}
-                        {transcriptText ? transcriptText : ''}
-                    </>
-                </div>
+            </div>
+            : "" }
+            <div className="custom-height scroll overflow-x-hidden overflow-y-auto bg-white rounded-sm" id="transcript_data" ref={transcriptContainerRef}>
+                <>
+                    {transcriptPoints.map((point, index) => {
+                        return <TranscriptData point={point} index={index} autoScrollAndHighlight={autoScrollAndHighlight} key={index} searchWords={searchWords} />
+                    }
+                    )}
+                    {transcriptText ? transcriptText : ''}
+                </>
             </div>
         </div>
 

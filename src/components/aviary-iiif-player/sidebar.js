@@ -86,8 +86,9 @@ const Sidebar = (props) => {
   }
 
   return (
-   
-    <div className="h-full px-5">
+    <>
+    
+    <div className="px-5">
       <div className="flex tabs-list space-x-5 py-3 px-5 mb-5 border-b">
         {openmetadata ? (<div className={`${(!opentranscript && !openTOC)&& "active"} cursor-pointer`} onClick={openMeta}>Metadata</div>) : '' }
         {opentocdata ? (<div className={`${openTOC && "active"} cursor-pointer`} onClick={openTOCTab}>Table of Contents</div>) : '' }
@@ -103,13 +104,44 @@ const Sidebar = (props) => {
         :
         openmetadata ? 
         (
-          <Metadata data={props.data} metadata={props.metadata} />
+          <Metadata data={props.data} metadata={props.metadata} playerInfo={props.playerInfo} />
         )
         :
         ""
       }
 
     </div>
+    <div className="information">
+    {
+                                    (props.playerInfo.logoInformation) ?
+                                        <div className="">
+                                            <div className='flex items-center space-x-3 py-3 px-5 border-t'>
+                                                <p
+
+                                                    className="text-sm"
+                                                >
+                                                    About the Provider:
+                                                </p>
+                                                <div className=''>
+                                                    <div className='flex items-center'>
+                                                        <a href={props.playerInfo.pageLink}>
+                                                            <img alt='' className=' object-contain w-5 h-5 mr-2' src={props.playerInfo.logoImage} />
+                                                        </a>
+                                                        <div>
+                                                            {props.playerInfo.logoInformation.map(({ label }) => (
+                                                                <div key={"provider-" + label.en}>
+                                                                    <p className='font-bold text-sm'>{label.en}</p>
+                                                                </div>
+                                                            ))}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        : ""
+                                }
+    </div>
+    </>
   );
 };
 

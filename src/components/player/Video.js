@@ -21,7 +21,7 @@ const Video = () => {
     }]
   };
 
-  if (carouselID?.format.includes("audio/")) {
+  if (carouselID?.format?.includes("audio/")) {
     videoJsOptions.aspectRatio = '1:0';
     videoJsOptions.controlBar = {
       "fullscreenToggle": false,
@@ -29,30 +29,30 @@ const Video = () => {
     };
     videoJsOptions.sources[0].type = carouselID.format
     videoJsOptions.inactivityTimeout = 0;
-  } else if (carouselID?.format.includes("youtube")) {
+  } else if (carouselID?.format?.includes("youtube")) {
     videoJsOptions.controlBar = {
       'pictureInPictureToggle': false
     };
     videoJsOptions.sources[0].type = 'video/youtube';
-  } else if (carouselID?.format.includes("vimeo")) {
+  } else if (carouselID?.format?.includes("vimeo")) {
     videoJsOptions.controlBar = {
       'pictureInPictureToggle': false
     };
     videoJsOptions.sources[0].type = 'video/vimeo'
-  } else if (carouselID?.format.includes("application")) {
+  } else if (carouselID?.format?.includes("application")) {
     videoJsOptions.sources[0].type = carouselID?.format
   }
   else {
     videoJsOptions.sources[0].type = carouselID?.format
   }
-
+console.log('carouselID',carouselID)
   return (
-    <div className="">
+    <div className={carouselID?.format?.includes("audio/") ? "sticky_div" : "" } >
       <div key={carouselID?.id}>
         {carouselID?.id ? (
           <VideoJS options={videoJsOptions} />
         ) : (
-          <div className="videoLoader">{videoLoader()}</div>
+          <div className=""><h5 className="pl-4">No Media Found</h5></div>
         )}
       </div>
     </div>

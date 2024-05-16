@@ -34,24 +34,25 @@ const VideoCarousel = (props) => {
 
   return (
     <>
-    <div className='slider-cover'>
-    <div className='heading-div'> 
-      <h3>Contents</h3>
-      <h5>Viewing {updateCount + 1} of {videos.length}</h5>
-      </div>
-      <div className="slider-container">
+    {videos.length > 1 ?  <div className='slider-cover'>
+      <div className='heading-div'> 
+        <h3>Contents</h3>
+        <h5>Viewing {updateCount + 1} of {videos.length}</h5>
+        </div>
+        <div className="slider-container">
 
-      <Slider {...settings}>
-        {
-          videos.map((video,index) => (
-            <div style={{ display: 'flex', alignItems: 'center', marginLeft: '0.5rem' }} className="list flex items-center space-x-2" key={"video-" + video.videoCount} onClick={()=>setUpdateCount(index)}>
-              <File {...video} key={"video-" + video.videoCount} />
-            </div>
-          ))
-        }
-        </Slider>
-    </div>
-</div>
+        <Slider {...settings}>
+          {
+            videos.map((video,index) => (
+              <div style={{ display: 'flex', alignItems: 'center', marginLeft: '0.5rem' }} className="list flex items-center space-x-2" key={"video-" + video.videoCount} onClick={()=>setUpdateCount(index)}>
+                <File {...video} key={"video-" + video.videoCount} />
+              </div>
+            ))
+          }
+          </Slider>
+      </div>
+      </div> : ""}
+    
     </>
     
 
