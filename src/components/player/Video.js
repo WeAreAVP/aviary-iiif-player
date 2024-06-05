@@ -1,11 +1,21 @@
-import React from "react";
+import React, {useState, useEffect} from "react";
 import { useSelector } from "react-redux";
 import VideoJS from './VideoJS'
 import { videoLoader } from "../../helpers/loaders";
+import Login from '../auth/login';
 
 const Video = () => {
+  const [service, setService] = useState({});
+  const [authToken, setAuthToken] = useState({});
+  const [skipAuth, setSkipAuth] = useState(false);
 
   const carouselID = useSelector(state => state.selectedItem);
+    useEffect(() => {
+      if(carouselID?.service)
+        setService(carouselID?.service[0]);
+
+  }, [carouselID])
+
   const videoJsOptions = {
     autoplay: true,
     fluid: true,
@@ -45,8 +55,8 @@ const Video = () => {
   else {
     videoJsOptions.sources[0].type = carouselID?.format
   }
-console.log('carouselID',carouselID)
-  return (
+  console.log('carouselID',carouselID)
+  return (service && Object.keys(authToken).length === 0 && skipAuth === false ? <Login service={service} setAuth={setAuthToken} skipAuth={setSkipAuth} /> :
     <div className={carouselID?.format?.includes("audio/") ? "sticky_div" : "" } >
       <div key={carouselID?.id}>
         {carouselID?.id ? (
