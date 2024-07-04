@@ -1,31 +1,47 @@
-import React, { useState } from 'react';
+import React,{useState, useEffect} from "react";
 import axios from 'axios';
 
 const Login = ({ service, setAuth, skipAuth }) => {
-    const [username, setUsername] = useState("");
-    const [password, setPassword] = useState("");
     const [failureMsg, setFailureMsg] = useState("");
+    const [newTab, setNewTab] = useState(null);
 
-    const setEmailValue = (e) => { setUsername(e.target.value) }
-    const setPassowrdValue = (e) => { setPassword(e.target.value) }
-
+    const handleTabClose = () => {
+        // Handle tab close event here
+        console.log('close',newTab)
+        console.log('service',service.service[0]['@id'])
+        
+    }
     const handleSubmit = (e) => {
         e.preventDefault();
-        axios.post(service['@id'], {
-            email: username,
-            password: password
-        })
-            .then(function (response) {
-                setAuth({
-                    'access-token': response.headers['access-token'],
-                    'client': response.headers['client'],
-                    'uid': response.headers['uid']
-                });
-            })
-            .catch(function (error) {
-                var msg = service.failureDescription ? service.failureDescription : 'Invalid email or password.'
-                setFailureMsg(msg);
-            });
+        console.log('service',service)
+
+        const tab = window.open(service['@id']+'?origin='+window.location.origin.toString(), '_blank');
+        setNewTab(tab);
+        const checkTabClosed = setInterval(() => {
+            if (tab.closed) {
+              console.log('Tab closed');
+              clearInterval(checkTabClosed); // Stop the interval
+              setNewTab(null); // Reset the state
+              const iframe = document.createElement('iframe');
+              iframe.src = service.service[0]['@id']+'?origin='+window.location.origin.toString();
+              iframe.style.width = '600px';
+              iframe.style.height = '400px';
+              iframe.style.border = '1px solid black';
+              document.body.appendChild(iframe);
+              iframe.onload = () => {
+                // Access the iframe's document
+                const iframeDocument = iframe.contentWindow.document;
+          
+                // Get the content of the iframe
+                const content = iframeDocument.body.innerHTML;
+                setIframeContent(content);
+                console.log('content',content)
+                // Optionally, you can remove the iframe from the DOM
+                // document.body.removeChild(iframe);
+              };
+            }
+        }, 1000); // Check every second
+        
     }
 
     const handleSkip = (e) => {
@@ -40,11 +56,11 @@ const Login = ({ service, setAuth, skipAuth }) => {
                 <p>{(service.description) ? service.description : ''}</p>
                 <span className="error-message">{failureMsg}</span>
                 <form>
-                    <div className='mb-5'><input value={username} onChange={setEmailValue} type="text" placeholder="Enter email" className="px-4 pt-4 pb-4 border w-full rounded-md" /></div>
-                    <div className='mb-5'><input value={password} onChange={setPassowrdValue} type="password" placeholder="password" className="px-4 pt-4 pb-4 border w-full rounded-md" /></div>
                     <button className='login-button p-3' onClick={handleSubmit}>{(service.confirmLabel) ? service.confirmLabel : 'Login'}</button>
                     <button className='skip-button p-3' onClick={handleSkip}>Skip</button>
                 </form>
+
+                
             </div>
         </div>
     )
