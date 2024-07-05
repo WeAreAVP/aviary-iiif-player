@@ -50,7 +50,6 @@ const Video = () => {
 
   useEffect(() => {
     const url = carouselID.id; // Replace with the URL of the file you want to check
-    console.log('url',url)
     // Ensure the URL is properly formatted
     if (!url.startsWith('http://') && !url.startsWith('https://')) {
       console.error('Invalid URL format. URL should start with "http://" or "https://".');
@@ -82,7 +81,6 @@ const Video = () => {
 
   }, []);
 
-console.log('carouselID',carouselID)
   return (
     <div className={carouselID?.format?.includes("audio/") ? "sticky_div" : "" } >
       {isRange ? <div className="text-danger">Byte-range request not supported</div> : ""}
