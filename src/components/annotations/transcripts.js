@@ -14,6 +14,7 @@ import chroma from "chroma-js";
 const Transcripts = (props) => {
     const [transcriptNames, selectTranscriptNames] = useState([])
     const [open, setOpen] = useState(true);
+    const [select_ids, setSelectIds] = useState([]);
     const selectStyles = {
         control: (base) => ({
           ...base,
@@ -79,6 +80,7 @@ const Transcripts = (props) => {
                 for (let key in val) {
                     arr.push(parseInt(key)+1)
                 }
+                setSelectIds(arr)
                 processTranscripts(arr,val)
                 setIsFetching(false);
             })
@@ -130,6 +132,7 @@ const Transcripts = (props) => {
         let ids = e.map((i, key) => {
             return  i.value;
         })
+        setSelectIds(ids)
         setTranscriptText("")
         await processTranscripts(ids,annotations);
     }
@@ -200,7 +203,7 @@ const Transcripts = (props) => {
                 className="mb-5"
                 onClick={() => setOpen(!open)}
             >
-                {open ? <div className="flex relative pl-4"><IoIosArrowDown className="absolute " style={{left: '-6px', top: '4px'}} /> Toggle Controls </div> : <div className="flex relative pl-4"><IoIosArrowForward className="absolute" style={{left: '-6px', top: '4px'}} /> Toggle Controls </div>}
+                {open ? <div className="flex relative pl-4"><IoIosArrowDown className="absolute " style={{left: '-6px', top: '4px'}} /> Hide Controls </div> : <div className="flex relative pl-4"><IoIosArrowForward className="absolute" style={{left: '-6px', top: '4px'}} /> Show Controls </div>}
             </button>
             {open ? 
             <div className="expand-toggle">
@@ -216,6 +219,7 @@ const Transcripts = (props) => {
                         className="select_annotations"
                         classNamePrefix="point_label"
                         defaultValue={annotations ? annotations.map((e, key) => {
+                            if(select_ids.includes(key + 1))
                             return { value: key + 1, label: e.label};
                         }): {}}
                         onChange={handleSelectTranscript}
