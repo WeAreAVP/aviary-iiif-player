@@ -204,6 +204,9 @@ html {
     position: relative;
     padding-top: 0px;
 }
+.dash-js-audio {
+    height: 60px !important;
+}
 .custom-select label {
     position: absolute;
     top: -10px;

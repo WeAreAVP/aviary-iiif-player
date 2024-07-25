@@ -61,6 +61,7 @@
     "buffer": "^6.0.3",
     "chroma-js": "^2.4.2",
     "connected-react-router": "^6.8.0",
+    "dashjs": "^4.7.4",
     "history": "^5.0.0",
     "interweave": "^12.9.0",
     "manifesto.js": "^4.1.0",
@@ -82,6 +83,7 @@
     "regenerator-runtime": "^0.13.9",
     "slick-carousel": "^1.8.1",
     "video.js": "^7.21.5",
+    "videojs-contrib-dash": "^5.1.1",
     "videojs-vr": "^1.7.2",
     "videojs-youtube": "^2.6.1"
   },

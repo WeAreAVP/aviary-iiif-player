@@ -1,33 +1,49 @@
-import React,{useState, useEffect} from "react";
-import axios from 'axios';
+import React, { useState, useEffect, useRef } from "react";
 
-const Login = ({ service, setAuth, skipAuth }) => {
+const Login = ({ service, setAuth, skipAuth, setIframeSrc, setIframeLoadToken }) => {
     const [failureMsg, setFailureMsg] = useState("");
     const [newTab, setNewTab] = useState(null);
 
-   
+
     const handleSubmit = (e) => {
         e.preventDefault();
-        console.log('service',service.service[0].id)
+        let request_service = service;
 
-        const tab = window.open(service.service[0].id+'?origin='+window.location.origin.toString(), '_blank');
+        if (request_service?.service) {
+            request_service = request_service.service;
+        }
+        if (request_service.length > 0) {
+            request_service = request_service[0];
+        }
+        let id = request_service.id;
+        if (service["@id"]) {
+            id = service["@id"];
+        }
+
+        const tab = window.open(id + '?origin=' + window.location.origin.toString(), '_blank');
         setNewTab(tab);
         const checkTabClosed = setInterval(() => {
             if (tab.closed) {
-              console.log('Tab closed');
-              clearInterval(checkTabClosed); // Stop the interval
-              setNewTab(null); // Reset the state
-              axios.get(service.service[0].service[0].id+'?origin='+window.location.origin.toString(), { withCredentials: true });
+                console.log('Tab closed');
+
+                clearInterval(checkTabClosed); // Stop the interval
+                setNewTab(null); // Reset the state
+                let iid = "";
+                if (request_service?.service) {
+                    iid = request_service.service[0].id;
+                } else {
+                    iid = service.service[0]["@id"];
+                }
+                setIframeSrc(iid + '?origin=' + window.location.origin.toString());
+                setIframeLoadToken(true)
             }
         }, 1000); // Check every second
-        
-    }
+    };
 
     const handleSkip = (e) => {
         e.preventDefault();
         skipAuth(true);
-    }
-
+    };
     return (
         <div className='login-form-holder'>
             <div className='login-form'>
@@ -38,11 +54,10 @@ const Login = ({ service, setAuth, skipAuth }) => {
                     <button className='login-button p-3' onClick={handleSubmit}>{(service.confirmLabel) ? service.confirmLabel : 'Login'}</button>
                     <button className='skip-button p-3' onClick={handleSkip}>Skip</button>
                 </form>
-
-                
             </div>
+           
         </div>
-    )
-}
+    );
+};
 
 export default Login;
