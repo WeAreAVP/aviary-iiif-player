@@ -60,8 +60,7 @@ const Video = () => {
     youtube: { autohide: 1, autoplay: false },
     poster: carouselID?.poster,
     sources: [{
-      src: carouselID?.id,
-      type: 'application/dash+xml'
+      src: carouselID?.id
     }],
     html5: {
       vhs: {
@@ -94,7 +93,6 @@ const Video = () => {
   else {
     videoJsOptions.sources[0].type = carouselID?.format
   }
-  videoJsOptions.sources[0].withCredentials = true
   useEffect(() => {
     const url = carouselID.id; // Replace with the URL of the file you want to check
     // Ensure the URL is properly formatted
