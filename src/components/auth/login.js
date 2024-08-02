@@ -1,38 +1,49 @@
-import React, { useState } from 'react';
-import axios from 'axios';
+import React, { useState, useEffect, useRef } from "react";
 
-const Login = ({ service, setAuth, skipAuth }) => {
-    const [username, setUsername] = useState("");
-    const [password, setPassword] = useState("");
+const Login = ({ service, setAuth, skipAuth, setIframeSrc, setIframeLoadToken }) => {
     const [failureMsg, setFailureMsg] = useState("");
+    const [newTab, setNewTab] = useState(null);
 
-    const setEmailValue = (e) => { setUsername(e.target.value) }
-    const setPassowrdValue = (e) => { setPassword(e.target.value) }
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        axios.post(service['@id'], {
-            email: username,
-            password: password
-        })
-            .then(function (response) {
-                setAuth({
-                    'access-token': response.headers['access-token'],
-                    'client': response.headers['client'],
-                    'uid': response.headers['uid']
-                });
-            })
-            .catch(function (error) {
-                var msg = service.failureDescription ? service.failureDescription : 'Invalid email or password.'
-                setFailureMsg(msg);
-            });
-    }
+        let request_service = service;
+
+        if (request_service?.service) {
+            request_service = request_service.service;
+        }
+        if (request_service.length > 0) {
+            request_service = request_service[0];
+        }
+        let id = request_service.id;
+        if (service["@id"]) {
+            id = service["@id"];
+        }
+
+        const tab = window.open(id + '?origin=' + window.location.origin.toString(), '_blank');
+        setNewTab(tab);
+        const checkTabClosed = setInterval(() => {
+            if (tab.closed) {
+                console.log('Tab closed');
+
+                clearInterval(checkTabClosed); // Stop the interval
+                setNewTab(null); // Reset the state
+                let iid = "";
+                if (request_service?.service) {
+                    iid = request_service.service[0].id;
+                } else {
+                    iid = service.service[0]["@id"];
+                }
+                setIframeSrc(iid + '?origin=' + window.location.origin.toString());
+                setIframeLoadToken(true)
+            }
+        }, 1000); // Check every second
+    };
 
     const handleSkip = (e) => {
         e.preventDefault();
         skipAuth(true);
-    }
-
+    };
     return (
         <div className='login-form-holder'>
             <div className='login-form'>
@@ -40,14 +51,13 @@ const Login = ({ service, setAuth, skipAuth }) => {
                 <p>{(service.description) ? service.description : ''}</p>
                 <span className="error-message">{failureMsg}</span>
                 <form>
-                    <div className='mb-5'><input value={username} onChange={setEmailValue} type="text" placeholder="Enter email" className="px-4 pt-4 pb-4 border w-full rounded-md" /></div>
-                    <div className='mb-5'><input value={password} onChange={setPassowrdValue} type="password" placeholder="password" className="px-4 pt-4 pb-4 border w-full rounded-md" /></div>
                     <button className='login-button p-3' onClick={handleSubmit}>{(service.confirmLabel) ? service.confirmLabel : 'Login'}</button>
                     <button className='skip-button p-3' onClick={handleSkip}>Skip</button>
                 </form>
             </div>
+           
         </div>
-    )
-}
+    );
+};
 
 export default Login;
