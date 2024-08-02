@@ -61,12 +61,7 @@ const Video = () => {
     poster: carouselID?.poster,
     sources: [{
       src: carouselID?.id
-    }],
-    html5: {
-      vhs: {
-          withCredentials: true
-      }
-    }
+    }]
   };
 
   if (carouselID?.format?.includes("audio/")) {
