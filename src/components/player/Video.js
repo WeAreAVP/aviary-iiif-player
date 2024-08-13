@@ -26,7 +26,7 @@ const Video = () => {
   useEffect(() => {
     if(carouselID?.service)
       setService(carouselID?.service[0]);
-    if(carouselID?.service[0]?.type == tokenType)
+    if(carouselID?.service && carouselID?.service[0]?.type == tokenType)
     { 
       setProbe(carouselID?.service[0]?.id)
       setServiceType(carouselID?.service[0]?.type)
@@ -35,7 +35,8 @@ const Video = () => {
         setAuthUrl(carouselID?.service[0]?.service[0]?.service[0]?.id)
       }
     }
-    setResourcesUrl(carouselID.id)
+    if(carouselID?.service)
+      setResourcesUrl(carouselID.id)
   }, [carouselID])
 
   useEffect(async() => {
@@ -45,8 +46,6 @@ const Video = () => {
       carouselID.id = res?.substitute?.id
       setResourcesUrl(res?.substitute?.id)
     }
-
-    console.log('res',res)
   }, [skipAuth])
 
   const [isRange, setIsRange] = useState(false);
@@ -193,6 +192,7 @@ const fetchData = async (access_token) => {
 };
 
 useEffect(() => {
+  if(service?.id){
     // Event listener for messages from the iframe
     window.addEventListener('message', receiveMessage, false);
     // Function to handle iframe load and trigger the message
@@ -228,8 +228,8 @@ useEffect(() => {
             iframe.removeEventListener('load', handleIframeLoad);
         }
     };
+  }
 }, [loadToken]);
-
   return (<div>
     <iframe
                 id="commsFrame"
@@ -238,7 +238,7 @@ useEffect(() => {
                 src={src}
                 ref={iframeRef}
             ></iframe>
-    {service && Object.keys(authToken).length === 0 && skipAuth === false ? <Login service={service} setAuth={setAuthToken} skipAuth={setSkipAuth} setIframeSrc={setSrc} setIframeLoadToken={setLoadToken} /> :
+    {service?.id && Object.keys(authToken).length === 0 && skipAuth === false ? <Login service={service} setAuth={setAuthToken} skipAuth={setSkipAuth} setIframeSrc={setSrc} setIframeLoadToken={setLoadToken} /> :
     <div className={carouselID?.format?.includes("audio/") ? "sticky_div" : "" } >
       {isRange ? <div className="text-danger">Byte-range request not supported</div> : ""}
       <div key={carouselID?.id}>
