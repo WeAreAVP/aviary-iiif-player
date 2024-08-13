@@ -19,6 +19,7 @@ export async function getManifestAnnotations(data, itemNo) {
                 if(item?.items)
                 {
                     item.items.forEach((canvas_annotations_item) => {
+
                         if(canvas_annotations_item?.body && canvas_annotations_item?.body?.type == "Choice")
                         {
                             canvas_annotations_item.body.items.forEach(async (annotate) => {
@@ -43,6 +44,7 @@ export async function getManifestAnnotations(data, itemNo) {
         if(rendering)
         {
 
+
             for (let i = 0; i < rendering.length; i++) {
                 if(rendering[i].label)
                 {
@@ -62,11 +64,13 @@ export async function getManifestAnnotations(data, itemNo) {
         }
 
         if (canvas_annotations) {
+
             canvas_annotations.forEach(async (annotate) => {
                 annotationPage = new AnnotationPage(annotate, {});
                 if (annotationPage.getItems() !== undefined) {
 
                     let transcript = formatIndexes(annotationPage.getItems());
+
                     if (transcript.length > 0) {
                         let label =  annotationPage.getLabel()?.getValue();
                         if(label == null)
@@ -88,6 +92,7 @@ export async function getManifestAnnotations(data, itemNo) {
                     }
                 } else {
                     let annot = await fetchJson(annotationPage.__jsonld?.id)
+
                     if (Object.keys(annot).length > 0) {
                         annotations.push(annot)
                     }
@@ -95,6 +100,7 @@ export async function getManifestAnnotations(data, itemNo) {
             })
         }
     }
+
     return annotations;
 }
 
@@ -467,7 +473,8 @@ export function parseJsonAnnotation(annotation) {
             } else if (label == "Title") {
                 values.push('<strong>' + value + '</strong>')
             } else {
-                values.push(value.replaceAll("\n", "<br/>"));
+                if(value !== undefined)
+                    values.push(value.replaceAll("\n", "<br/>"));
             }
             content = values.join(" ");
             if (label && !['Title', 'Synopsis'].includes(label)) {
@@ -476,6 +483,7 @@ export function parseJsonAnnotation(annotation) {
         }
 
     } else {
+
         content = body[0]?.__jsonld?.value.replaceAll("\n", "<br/>");
     }
     const hash = { text: content };
@@ -489,9 +497,13 @@ export function parseJsonAnnotation(annotation) {
     else
     {
         const params = new URLSearchParams(target.split("#")[1])
-        let time = params.get("t").split(",");
-        hash.starttime = time[0];
-        if(time.length > 1) hash.endtime = time[1];
+        let time = params?.get("t")?.split(",");
+        if(time !== undefined)
+        {
+            hash.starttime = time[0];
+            if(time.length > 1) hash.endtime = time[1];
+        }
+           
     }
     return hash;
 }
