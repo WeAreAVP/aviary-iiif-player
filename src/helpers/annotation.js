@@ -371,7 +371,7 @@ function formatIndexesItems(transcript, files) {
                         {
                             if(last_endtime == '') point_hash.starttime = time[0]; 
                             child_hash.starttime = time[0]
-                            point_hash.endtime = time[1]; 
+                            point_hash.endtime = time[1] - last_endtime;
                             child_hash.endtime = time[1];
                             point_hash.child.push(child_hash)
                             last_endtime = point_hash.endtime;
