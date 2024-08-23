@@ -42,7 +42,7 @@ const TableofcontentData = (props) => {
     e.preventDefault();
     if (player) {
       let video;
-      if(file)
+      if(file.length > 0)
       {
         file = file.split(' ').join('_')
         video = document.getElementById("item-"+file);
@@ -51,14 +51,12 @@ const TableofcontentData = (props) => {
       {
         video = document.getElementById("item-"+index);
       }
-     
       if(video && video.getAttribute('src') !== player.src())
       {
         player.src({ src: video.getAttribute('src'), type: video.getAttribute('type') });
         player.play();
         player.currentTime(e.currentTarget.getAttribute('starttime'));
       }
-
       player.currentTime(e.currentTarget.getAttribute('starttime'));
     }
     textRefs.current.map((tr) => {
@@ -73,7 +71,7 @@ const TableofcontentData = (props) => {
     
     if (player) {
       let video;
-      if(file)
+      if(file.length > 0)
       {
         file = file.split(' ').join('_')
         video = document.getElementById("item-"+file);
@@ -106,6 +104,7 @@ const TableofcontentData = (props) => {
                   starttime={props.point.starttime} style={{ cursor: 'pointer', fontWeight: '500' }} className="cursor-pointer hover:underline hover:text-blue-800 transcript_time">
                     {moment.utc(props.point.starttime * 1000).format('HH:mm:ss')}
                   </div>
+                  
                   { props.point?.endtime ? <span>&#8212;</span> : "" }
                   {
                     props.point?.endtime ? <div onClick={(e)=>handleTranscriptTextEndTimeClick(e,props.index,props.point.file)}

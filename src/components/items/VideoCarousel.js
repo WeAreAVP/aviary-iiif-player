@@ -31,7 +31,6 @@ const VideoCarousel = (props) => {
   if (isFetching) return videoLoader();
   if (dataError) return <span>Structure is not correct</span>;
   if (videos.length <= 0) return <span>No media item available.</span>;
-
   return (
     <>
     {videos.length > 1 ?  <div className='slider-cover'>
@@ -45,7 +44,7 @@ const VideoCarousel = (props) => {
           {
             videos.map((video,index) => (
               <div style={{ display: 'flex', alignItems: 'center', marginLeft: '0.5rem' }} className="list flex items-center space-x-2" key={"video-" + video.videoCount} onClick={()=>setUpdateCount(index)}>
-                <File {...video} key={"video-" + video.videoCount} />
+                <File {...video} key={"video-" + video.videoCount} index={"item-"+index}/>
               </div>
             ))
           }
