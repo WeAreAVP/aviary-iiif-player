@@ -66,6 +66,7 @@
     "interweave": "^12.9.0",
     "manifesto.js": "^4.1.0",
     "moment": "^2.29.1",
+    "patch-package": "^8.0.0",
     "query-string": "^8.1.0",
     "react-content-loader": "^6.1.0",
     "react-highlight-words": "^0.17.0",
