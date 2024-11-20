@@ -100,7 +100,7 @@ function getCaptions(canvas) {
                     if(items[j]?.body.label)
                     {
                         captions.push({
-                            label: items[j]?.body.label[Object.keys(items[j]?.body.label)][0],
+                            label: items[j]?.body.label[Object.keys(items[j]?.body.label)[0]],
                             language: items[j]?.body?.language,
                             src: items[j]?.body?.id,
                             kind: 'captions'
