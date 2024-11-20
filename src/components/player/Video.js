@@ -102,7 +102,7 @@ const Video = () => {
       }
     })
     .then(response => {
-      if (response.status === 206) {
+      if (response.status === 206 || response.status === 200) {
         const contentRange = response.headers.get('Content-Range');
         if (contentRange) {
           console.log('Byte-range request supported:', contentRange);
