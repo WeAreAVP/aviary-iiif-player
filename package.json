@@ -35,8 +35,10 @@
     "html-webpack-plugin": "^5.0.0",
     "less": "^4.1.2",
     "less-loader": "^10.2.0",
+    "patch-package": "^8.0.0",
     "postcss": "^8.4.5",
     "postcss-loader": "^6.2.1",
+    "postinstall-postinstall": "^2.1.0",
     "style-loader": "^3.3.1",
     "webpack": "^5.94.0",
     "webpack-cli": "^5.1.4",
@@ -99,6 +101,7 @@
   "resolutions": {
     "send": "0.19.0",
     "semver": "^7.5.3",
-    "cookie": "0.7.0"
+    "cookie": "0.7.0",
+    "path-to-regexp": "0.1.12"
   }
 }
