@@ -104,6 +104,7 @@
     "semver": "^7.5.3",
     "cookie": "0.7.0",
     "path-to-regexp": "0.1.12",
-    "on-headers": "^1.1.0"
+    "on-headers": "^1.1.0",
+    "tmp": "0.2.4"
   }
 }
