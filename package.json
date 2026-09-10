@@ -68,7 +68,7 @@
     "interweave": "^12.9.0",
     "manifesto.js": "^4.1.0",
     "moment": "^2.29.1",
-    "query-string": "^8.1.0",
+    "query-string": "^9.5.1",
     "react-content-loader": "^6.1.0",
     "react-highlight-words": "^0.17.0",
     "react-hot-loader": "^4.13.0",
@@ -107,7 +107,7 @@
     "path-to-regexp": "0.1.12",
     "on-headers": "^1.1.0",
     "tmp": "0.2.7",
-    "qs": "6.15.2",
+    "qs": "6.16.0",
     "yaml": "1.10.3",
     "uuid": "11.1.1"
   },
