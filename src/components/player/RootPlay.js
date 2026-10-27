@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch } from 'react-redux'
-import Player from './player';
+import Player from './Player';
 import { setItem } from '../../features';
 import { getPlayerInfo } from '../../helpers/utils';
 import { mainLoader } from '../../helpers/loaders';

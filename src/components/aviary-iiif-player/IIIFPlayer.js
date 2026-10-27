@@ -5,7 +5,7 @@ import { mainLoader } from '../../helpers/loaders';
 import { setItem } from '../../features';
 import axios from 'axios';
 import Sidebar from './sidebar';
-import Player from '../player/player';
+import Player from '../player/Player';
 import { getAuthService } from '../../helpers/utils';
 import Login from '../auth/login';
 import queryString from 'query-string';
